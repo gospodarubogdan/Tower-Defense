@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Base Framework">
       <UniqueIdentifier>{b66ac582-121f-4ce4-b907-22e53a764c9f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{a8503e8c-c895-4fed-ad25-446c77b976de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{e043277a-86ec-4e33-9518-cca28f401c16}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -31,7 +37,13 @@
       <Filter>Source Files\Base Framework</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Base Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -48,7 +60,16 @@
       <Filter>Header Files\Base Framework</Filter>
     </ClInclude>
     <ClInclude Include="Game.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Base Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.hpp">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui.hpp">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget.hpp">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

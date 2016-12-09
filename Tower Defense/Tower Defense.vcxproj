@@ -152,17 +152,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Gui.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Button.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameContext.hpp" />
     <ClInclude Include="GameStates.hpp" />
+    <ClInclude Include="Gui.hpp" />
     <ClInclude Include="State.hpp" />
     <ClInclude Include="StateManager.hpp" />
+    <ClInclude Include="Widget.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
