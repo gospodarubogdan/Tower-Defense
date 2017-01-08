@@ -2,6 +2,7 @@
 
 #include "StateManager.hpp"
 #include "GameContext.hpp"
+#include "Camera.hpp"
 
 class Game : sf::NonCopyable
 {
@@ -19,6 +20,7 @@ private:
 
 	sf::RenderWindow window;
 	States::Context  context;
+	Camera			 camera;
 	StateManager     manager;
 };
 

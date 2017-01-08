@@ -1,12 +1,22 @@
 #include "Game.hpp"
+#include "GameState.hpp"
+#include <iostream>
 
 Game::Game()
-	: context(window)
+	: window({ 800, 600 }, "TD", sf::Style::Titlebar | sf::Style::Close, sf::ContextSettings{0,0, 8, 1, 1, 0, false})
+	, context(window)
 	, manager(context)
+	, camera(context)
 {
-	window.create({ 800, 600 }, "TD", sf::Style::Titlebar | sf::Style::Close);
-
+	//sf::Style::Titlebar | sf::Style::Close
+	//window.create({ 1440, 900 }, "TD", sf::Style::Titlebar | sf::Style::Close);
+	window.setVerticalSyncEnabled(true);
+	//window.setFramerateLimit(60);
 	registerStates();
+
+	std::cout << window.getSize().x << ' ' << window.getSize().y << std::endl;
+
+	manager.pushState(States::ID::Game);
 }
 
 void Game::run()
@@ -46,18 +56,21 @@ void Game::processEvents()
 			window.close();
 
 		manager.processEvents(event);
+		camera.handleEvent(event);
 	}
 }
 
 void Game::update(sf::Time frameTime)
 {
 	manager.update(frameTime);
+	camera.update(frameTime);
 }
 
 void Game::draw()
 {
 	window.clear();
 
+	//camera.draw();
 	manager.draw();
 
 	window.display();
@@ -65,4 +78,5 @@ void Game::draw()
 
 void Game::registerStates()
 {
+	manager.registerState<GameState>(States::ID::Game);
 }
