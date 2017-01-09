@@ -160,6 +160,10 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityManager.cpp" />
+    <ClCompile Include="EntityPool.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Gui.cpp" />
@@ -175,7 +179,12 @@
   <ItemGroup>
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="Component.hpp" />
+    <ClInclude Include="ComponentsID.hpp" />
     <ClInclude Include="Constants.hpp" />
+    <ClInclude Include="Entity.hpp" />
+    <ClInclude Include="EntityManager.hpp" />
+    <ClInclude Include="EntityPool.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameContext.hpp" />
     <ClInclude Include="GameState.hpp" />
@@ -184,8 +193,10 @@
     <ClInclude Include="HUD.hpp" />
     <ClInclude Include="Label.hpp" />
     <ClInclude Include="MapLoader.hpp" />
+    <ClInclude Include="PositionComponent.hpp" />
     <ClInclude Include="State.hpp" />
     <ClInclude Include="StateManager.hpp" />
+    <ClInclude Include="System.hpp" />
     <ClInclude Include="TextureManager.hpp" />
     <ClInclude Include="TileMap.hpp" />
     <ClInclude Include="Widget.hpp" />
