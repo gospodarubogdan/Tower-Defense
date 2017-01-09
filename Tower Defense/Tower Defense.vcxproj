@@ -166,14 +166,18 @@
     <ClCompile Include="EntityPool.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Gui.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapLoader.cpp" />
+    <ClCompile Include="MoveSystem.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateManager.cpp" />
+    <ClCompile Include="System.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -189,15 +193,18 @@
     <ClInclude Include="GameContext.hpp" />
     <ClInclude Include="GameState.hpp" />
     <ClInclude Include="GameStates.hpp" />
+    <ClInclude Include="Grid.hpp" />
     <ClInclude Include="Gui.hpp" />
     <ClInclude Include="HUD.hpp" />
     <ClInclude Include="Label.hpp" />
     <ClInclude Include="MapLoader.hpp" />
-    <ClInclude Include="PositionComponent.hpp" />
+    <ClInclude Include="ComponentsData.hpp" />
+    <ClInclude Include="MoveSystem.hpp" />
     <ClInclude Include="State.hpp" />
     <ClInclude Include="StateManager.hpp" />
     <ClInclude Include="System.hpp" />
     <ClInclude Include="TextureManager.hpp" />
+    <ClInclude Include="Tile.hpp" />
     <ClInclude Include="TileMap.hpp" />
     <ClInclude Include="Widget.hpp" />
   </ItemGroup>

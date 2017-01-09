@@ -5,6 +5,7 @@
 #include "MapLoader.hpp"
 #include "TileMap.hpp"
 #include "HUD.hpp"
+#include "Grid.hpp"
 
 class GameState : public State
 {
@@ -19,6 +20,7 @@ public:
 private:
 	TextureManager textureManager;
 
+	Grid grid;
 	gui::HUD hud;
 	//MapLoader map;
 	sf::Texture texture;

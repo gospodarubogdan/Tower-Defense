@@ -5,6 +5,7 @@
 GameState::GameState(StateManager &stack, States::Context context)
 	: State(stack, context)
 	, map(TILE_SIZE, TILE_WORLD_SIZE)
+	, grid(*context.window)
 {
 	//map.loadFromCSV("data/mapValues.csv");
 	//map.loadSheet("data/mapsheet.png");
@@ -27,7 +28,9 @@ bool GameState::update(sf::Time dt)
 
 void GameState::draw()
 {
-	getContext().window->draw(map);
+	//getContext().window->draw(map);
+	grid.draw();
+
 
 	getContext().window->draw(hud);
 }

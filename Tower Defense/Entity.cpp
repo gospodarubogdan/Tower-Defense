@@ -14,12 +14,12 @@ const unsigned int Entity::getID() const
 
 bool Entity::hasComponent(Components::ID component)
 {
-	return false;
+	return componentBits & component;
 }
 
 void Entity::addComponent(Components::ID component)
 {
-	//componentBits.flip(component);
+	componentBits |= component;
 
 	manager->addComponent(*this, component);
 }

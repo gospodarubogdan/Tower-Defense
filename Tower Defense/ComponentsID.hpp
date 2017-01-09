@@ -1,14 +1,17 @@
 #pragma once
 
-const unsigned int MAX_COMPONENTS = 32;
-
 namespace Components
 {
-	enum class ID
+	enum ID : char
 	{
-		None = 0,
-		PositionComponent,
-		VelocityComponent,
-		RenderComponent
+		PositionComponent = 1 << 0,
+		VelocityComponent = 1 << 1,
+		HealthComponent   = 1 << 2,
+		RangeComponent    = 1 << 3
 	};
+}
+
+inline Components::ID &operator|=(Components::ID &a, Components::ID b) 
+{
+	return a = static_cast<Components::ID> (a | b);
 }

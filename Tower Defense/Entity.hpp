@@ -1,7 +1,5 @@
 #pragma once
 
-#include <bitset>
-
 #include "ComponentsID.hpp"
 
 class EntityManager;
@@ -32,5 +30,5 @@ public:
 private:
 	EntityManager *manager;
 	unsigned int ID;
-	std::bitset<MAX_COMPONENTS> componentBits;
+	Components::ID componentBits;
 };
