@@ -2,12 +2,17 @@
 
 namespace Components
 {
-	enum ID : char
+	enum ID
 	{
-		PositionComponent = 1 << 0,
-		VelocityComponent = 1 << 1,
-		HealthComponent   = 1 << 2,
-		RangeComponent    = 1 << 3
+		PositionComponent   = 1 << 0,
+		VelocityComponent   = 1 << 1,
+		TargetableComponent = 1 << 2,
+		RangeComponent      = 1 << 3,
+		ShootComponent      = 1 << 4,
+		TargetComponent     = 1 << 5,
+		RenderComponent     = 1 << 6,
+		AIComponent         = 1 << 7,
+		DamageComponent     = 1 << 8
 	};
 }
 

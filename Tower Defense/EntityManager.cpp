@@ -1,32 +1,134 @@
 #include "EntityManager.hpp"
 #include "Entity.hpp"
 
-EntityManager::EntityManager()
-	: pool(100)
+#include "DrawSystem.hpp"
+#include "ShootSystem.hpp"
+#include "MoveSystem.hpp"
+#include "AISystem.hpp"
+#include "DamageSystem.hpp"
+
+EntityManager::EntityManager(TextureManager *textureManager)
+	: textureManager(textureManager)
+	, pool(300)
 	, entities()
 	, components()
 {
+	registerComponents();
+	initializeSystems();
+}
+
+void EntityManager::update(sf::Time dt)
+{
+	for (auto &system : systems)
+		system->update(dt);
+
+	applyChanges();
+}
+
+void EntityManager::draw(sf::RenderWindow &window)
+{
+	renderer->draw(window);
 }
 
 Entity &EntityManager::createEntity()
 {
-	entities.emplace_back(*this, pool.createID());
-	return entities.back();
+	int id = pool.createID();
+	auto temp = std::make_unique<Entity>(*this, id);
+
+	actionQueue.push_back(std::make_pair(Action::Add, id));
+	entities.insert(std::make_pair(id, std::move(temp)));
+
+	return *entities[id].get();
 }
 
-void EntityManager::removeEntity(Entity entity)
+std::vector<Entity*> EntityManager::getEntities(Components::ID component)
 {
-	entities.erase(std::remove_if(
-		entities.begin(),
-		entities.end(),
-		[&](const auto &e) { return e.getID() == entity.getID(); }),
-		entities.end());
+	std::vector<Entity*> temp;
+	for (const auto &entity : entities)
+		if (entity.second->hasComponent(component))
+			temp.push_back(entity.second.get());
 
-	components.erase(entity.getID());
-	pool.removeID(entity.getID());
-	
-	// TODO
-	//remove components
+	return temp;
+}
+
+void EntityManager::requestEntityRemoval(EntityID entity)
+{
+	actionQueue.push_back(std::make_pair(Action::Remove, entity));
+}
+
+void EntityManager::registerComponents()
+{
+	registerComponent<PositionComponent>(Components::ID::PositionComponent);
+	registerComponent<VelocityComponent>(Components::ID::VelocityComponent);
+	registerComponent<RenderComponent>(Components::ID::RenderComponent);
+	registerComponent<RangeComponent>(Components::ID::RangeComponent);
+	registerComponent<TargetableComponent>(Components::ID::TargetableComponent);
+	registerComponent<ShootComponent>(Components::ID::ShootComponent);
+	registerComponent<TargetComponent>(Components::ID::TargetComponent);
+	registerComponent<AIComponent>(Components::ID::AIComponent);
+	registerComponent<DamageComponent>(Components::ID::DamageComponent);
+}
+
+void EntityManager::initializeSystems()
+{
+	auto drawSystem  = std::make_unique<DrawSystem>();
+	auto shootSystem = std::make_unique<ShootSystem>();
+	auto moveSystem  = std::make_unique<MoveSystem>();
+	auto aiSystem    = std::make_unique<AISystem>();
+	auto dmgSystem   = std::make_unique<DamageSystem>();
+
+	renderer = drawSystem.get();
+
+	systems.push_back(std::move(drawSystem));
+	systems.push_back(std::move(shootSystem));
+	systems.push_back(std::move(moveSystem));
+	systems.push_back(std::move(aiSystem));
+	systems.push_back(std::move(dmgSystem));
+
+	for (auto &system : systems)
+	{
+		system->setManager(this);
+		system->setTextureManager(textureManager);
+	}
+}
+
+void EntityManager::addToSystems(EntityID entity)
+{
+	for (auto &system : systems)
+		if ((system->getSystemBits() & entities[entity]->getBits()) == system->getSystemBits())
+			system->addEntity(*entities[entity].get());
+}
+
+void EntityManager::removeEntity(EntityID entity)
+{
+	Components::ID temp = entities[entity]->getBits();
+
+	for (auto &system : systems)
+		if (((system->getSystemBits() & temp) == system->getSystemBits()))
+			system->removeEntity(entity);
+
+	entities.erase(entity);
+	pool.removeID(entity);
+}
+
+void EntityManager::applyChanges()
+{
+	for (const auto &change : actionQueue)
+	{
+		switch (change.first)
+		{
+		case Action::Add:
+			addToSystems(change.second);
+			break;
+		case Action::Remove:
+			removeEntity(change.second);
+			break;
+		default:
+			break;
+		}
+	}
+
+	actionQueue.clear();
 }
 
 void EntityManager::addComponent(Entity &entity, Components::ID component)
@@ -37,6 +139,9 @@ void EntityManager::addComponent(Entity &entity, Components::ID component)
 	assert(found != factories.end());
 
 	components[id].insert(std::make_pair(component, found->second()));
+	/*auto temp = found->second();
+	temp->setParent(&entity);
+	components.push_back(std::move(temp));*/
 }
 
 void EntityManager::removeComponent(Entity &entity, Components::ID component)
@@ -64,4 +169,10 @@ Component *EntityManager::getComponent(Entity &entity, Components::ID component)
 		return nullptr;
 
 	return components[id][component].get();
+
+	/*for (const auto &c : components)
+	{
+		if (c->getParent() == &entity)
+			return c.get();
+	}*/
 }

@@ -34,7 +34,7 @@ std::size_t EntityPool::createID()
 void EntityPool::removeID(std::size_t id)
 {
 	assert(id < entities.size());
-	assert(entities[id] != 0);
+	//assert(entities[id] == 0);
 
 	entities[id] = 0;
 	freeEntities.push_back(id);

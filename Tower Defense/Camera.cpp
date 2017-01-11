@@ -7,9 +7,9 @@ Camera::Camera(States::Context context)
 	, dragging(false)
 {
 	windowSize = context.window->getSize();
-	view.setSize(windowSize.x, 640);
+	view.setSize(windowSize.x, windowSize.y); //480
 	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
-	view.setViewport({ 0.f, 0.f, 1.f, 0.8f });
+	//view.setViewport({ 0.f, 0.f, 1.f, 1.f });
 
 	context.window->setView(view);
 
@@ -78,7 +78,7 @@ void Camera::update(sf::Time dt)
 
 
 		if (view.getCenter().y - view.getSize().y / 2 < 0) view.setCenter(view.getCenter().x, view.getSize().y / 2);
-		else if (view.getCenter().y + view.getSize().y / 2 > MAP_HEIGHT * TILE_WORLD_SIZE) view.setCenter(view.getCenter().x, MAP_HEIGHT * TILE_WORLD_SIZE - view.getSize().y / 2);
+		else if (view.getCenter().y + view.getSize().y / 2 > MAP_HEIGHT * TILE_WORLD_SIZE + 150) view.setCenter(view.getCenter().x, (MAP_HEIGHT * TILE_WORLD_SIZE + 150) - view.getSize().y / 2);
 		
 		context.window->setView(view);
 	}
@@ -115,4 +115,9 @@ void Camera::draw()
 	std::cout << x << ' ' << y << std::endl;
 
 	view.setCenter(x, y);
+}
+
+const sf::View &Camera::getView()
+{
+	return view;
 }

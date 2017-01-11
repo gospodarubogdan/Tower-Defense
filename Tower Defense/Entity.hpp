@@ -1,9 +1,11 @@
 #pragma once
 
 #include "ComponentsID.hpp"
+#include "Component.hpp"
+
+#include <unordered_map>
 
 class EntityManager;
-class Component;
 
 class Entity
 {
@@ -13,9 +15,9 @@ public:
 	Entity() = default;
 	~Entity() = default;
 
-	Entity(const Entity&) = default;
+	Entity(const Entity&) = delete;
 	Entity(Entity&&) = default;
-	Entity& operator=(const Entity&) = default;
+	Entity& operator=(const Entity&) = delete;
 	Entity& operator=(Entity&&) = default;
 
 	const unsigned int getID() const;
@@ -26,9 +28,12 @@ public:
 	void removeComponent(Components::ID component);
 
 	Component *getComponent(Components::ID component);
+	Components::ID getBits() const;
 
 private:
 	EntityManager *manager;
 	unsigned int ID;
 	Components::ID componentBits;
+
+	std::unordered_map<Components::ID, Component::Ptr> components;
 };

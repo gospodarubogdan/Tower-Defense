@@ -7,6 +7,7 @@
 
 class EntityManager;
 class Entity;
+class TextureManager;
 
 class System
 {
@@ -15,12 +16,18 @@ public:
 	virtual ~System() = default;
 
 	virtual void update(sf::Time dt) = 0;
-	virtual void addComponent(Entity &entity, Components::ID component) = 0;
+	
+	virtual void addEntity(Entity &entity);
+	void removeEntity(unsigned int id);
 	
 	void setManager(EntityManager *manager);
-	void setComponents(Components::ID components);
+	void setTextureManager(TextureManager *textureManager);
+	Components::ID getSystemBits() const;
 
 protected:
 	EntityManager *manager;
+	TextureManager *textureManager;
 	Components::ID bitset;
+
+	std::vector<Entity*> entities;
 };

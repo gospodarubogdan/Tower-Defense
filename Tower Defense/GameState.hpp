@@ -6,6 +6,13 @@
 #include "TileMap.hpp"
 #include "HUD.hpp"
 #include "Grid.hpp"
+#include "EntityManager.hpp"
+#include "Camera.hpp"
+#include "TowerTypes.hpp"
+
+#include "ShootSystem.hpp"
+#include "MoveSystem.hpp"
+#include "DrawSystem.hpp"
 
 class GameState : public State
 {
@@ -18,8 +25,22 @@ public:
 	void draw() override;
 
 private:
+	void placeTower();
+	bool validPosition();
+
 	TextureManager textureManager;
 
+	bool selected;
+	Tower::Type tower;
+	sf::RectangleShape placement;
+
+	Camera camera;
+
+	ShootSystem shootsystem;
+	MoveSystem ms;
+	DrawSystem ds;
+
+	EntityManager entityManager;
 	Grid grid;
 	gui::HUD hud;
 	//MapLoader map;

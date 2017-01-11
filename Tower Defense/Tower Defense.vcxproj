@@ -158,9 +158,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AISystem.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="DamageSystem.cpp" />
+    <ClCompile Include="DrawSystem.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="EntityPool.cpp" />
@@ -173,6 +176,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapLoader.cpp" />
     <ClCompile Include="MoveSystem.cpp" />
+    <ClCompile Include="ShootSystem.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="System.cpp" />
@@ -181,14 +185,18 @@
     <ClCompile Include="TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AISystem.hpp" />
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Component.hpp" />
     <ClInclude Include="ComponentsID.hpp" />
     <ClInclude Include="Constants.hpp" />
+    <ClInclude Include="DamageSystem.hpp" />
+    <ClInclude Include="DrawSystem.hpp" />
     <ClInclude Include="Entity.hpp" />
     <ClInclude Include="EntityManager.hpp" />
     <ClInclude Include="EntityPool.hpp" />
+    <ClInclude Include="EntityTypes.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameContext.hpp" />
     <ClInclude Include="GameState.hpp" />
@@ -200,12 +208,14 @@
     <ClInclude Include="MapLoader.hpp" />
     <ClInclude Include="ComponentsData.hpp" />
     <ClInclude Include="MoveSystem.hpp" />
+    <ClInclude Include="ShootSystem.hpp" />
     <ClInclude Include="State.hpp" />
     <ClInclude Include="StateManager.hpp" />
     <ClInclude Include="System.hpp" />
     <ClInclude Include="TextureManager.hpp" />
     <ClInclude Include="Tile.hpp" />
     <ClInclude Include="TileMap.hpp" />
+    <ClInclude Include="TowerTypes.hpp" />
     <ClInclude Include="Widget.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -56,14 +56,12 @@ void Game::processEvents()
 			window.close();
 
 		manager.processEvents(event);
-		camera.handleEvent(event);
 	}
 }
 
 void Game::update(sf::Time frameTime)
 {
 	manager.update(frameTime);
-	camera.update(frameTime);
 }
 
 void Game::draw()

@@ -6,9 +6,11 @@ class Grid
 {
 public:
 	explicit Grid(sf::RenderWindow &window);
-	~Grid();
+	~Grid() = default;
 
 	void draw();
+
+	Tile &getTile(int index);
 
 private:
 	void loadFromCSV(const std::string &filename);

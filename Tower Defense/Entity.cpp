@@ -20,16 +20,30 @@ bool Entity::hasComponent(Components::ID component)
 void Entity::addComponent(Components::ID component)
 {
 	componentBits |= component;
+	
+	auto found = manager->factories.find(component);
+	assert(found != manager->factories.end());
+	components.insert(std::make_pair(component, found->second()));
 
-	manager->addComponent(*this, component);
+	//manager->addComponent(*this, component);
 }
 
 void Entity::removeComponent(Components::ID component)
 {
-	manager->removeComponent(*this, component);
+	//manager->removeComponent(*this, component);
 }
 
 Component *Entity::getComponent(Components::ID component)
 {
-	return manager->getComponent(*this, component);
+	auto found = components.find(component);
+	if (found == components.end())
+		return nullptr;
+
+	return components.at(component).get();
+	//return manager->getComponent(*this, component);
+}
+
+Components::ID Entity::getBits() const
+{
+	return componentBits;
 }

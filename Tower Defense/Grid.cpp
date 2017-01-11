@@ -18,19 +18,20 @@ Grid::Grid(sf::RenderWindow &window)
 		for (int y = 0; y < MAP_HEIGHT; y++)
 		{
 			int tileNumber = mapValues[y * MAP_WIDTH + x];
-			addTile(tileNumber, y, x);
+			addTile(tileNumber, x, y);
 		}
 	}
-}
-
-Grid::~Grid()
-{
 }
 
 void Grid::draw()
 {
 	for (const auto &tile : tiles)
 		window.draw(tile);
+}
+
+Tile &Grid::getTile(int index)
+{
+	return tiles[index];
 }
 
 void Grid::loadFromCSV(const std::string &filename)
@@ -62,5 +63,9 @@ void Grid::addTile(int tile, int x, int y)
 	sf::IntRect rect{TILE_SIZE * (tile % 19), TILE_SIZE * (tile / 19), TILE_SIZE, TILE_SIZE};
 
 	tiles.back().setTexture(texture, rect);
-	tiles.back().setPosition(y * TILE_WORLD_SIZE, x * TILE_WORLD_SIZE);
+	tiles.back().setPosition(x * TILE_SIZE, y * TILE_SIZE);
+
+	// HARD CODED
+	if(tile == 266) tiles.back().setState(Tile::Type::Valid);
+	else tiles.back().setState(Tile::Type::Invalid);
 }

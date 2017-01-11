@@ -2,11 +2,11 @@
 
 #include "System.hpp"
 
-class MoveSystem : public System
+class DamageSystem : public System
 {
 public:
-	MoveSystem();
-	~MoveSystem() = default;
+	DamageSystem();
+	~DamageSystem() = default;
 
 	void update(sf::Time dt) override;
 
