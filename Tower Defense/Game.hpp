@@ -3,6 +3,7 @@
 #include "StateManager.hpp"
 #include "GameContext.hpp"
 #include "Camera.hpp"
+#include "TextureManager.hpp"
 
 class Game : sf::NonCopyable
 {
@@ -17,6 +18,9 @@ private:
 	void draw();
 
 	void registerStates();
+
+	sf::Font       font;
+	TextureManager textureManager;
 
 	sf::RenderWindow window;
 	States::Context  context;

@@ -32,7 +32,7 @@ void DamageSystem::update(sf::Time dt)
 			{
 				manager->requestEntityRemoval(target->target->getID());
 				auto turret = static_cast<TargetComponent*>(hp->parent->getComponent(Components::ID::TargetComponent));
-				
+				// make the entity pointer to nullptr inside entitymanager when removing the entity
 				turret->target = nullptr;
 			}
 		}

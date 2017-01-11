@@ -175,6 +175,7 @@
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapLoader.cpp" />
+    <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="MoveSystem.cpp" />
     <ClCompile Include="ShootSystem.cpp" />
     <ClCompile Include="State.cpp" />
@@ -207,6 +208,7 @@
     <ClInclude Include="Label.hpp" />
     <ClInclude Include="MapLoader.hpp" />
     <ClInclude Include="ComponentsData.hpp" />
+    <ClInclude Include="MenuState.hpp" />
     <ClInclude Include="MoveSystem.hpp" />
     <ClInclude Include="ShootSystem.hpp" />
     <ClInclude Include="State.hpp" />
