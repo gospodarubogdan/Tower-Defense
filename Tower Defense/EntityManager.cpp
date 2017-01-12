@@ -6,9 +6,10 @@
 #include "MoveSystem.hpp"
 #include "AISystem.hpp"
 #include "DamageSystem.hpp"
+#include "AnimationSystem.hpp"
 
-EntityManager::EntityManager(TextureManager *textureManager)
-	: textureManager(textureManager)
+EntityManager::EntityManager(States::Context context)
+	: context(context)
 	, pool(300)
 	, entities()
 	, components()
@@ -51,6 +52,11 @@ std::vector<Entity*> EntityManager::getEntities(Components::ID component)
 	return temp;
 }
 
+States::Context EntityManager::getContext() const
+{
+	return context;
+}
+
 void EntityManager::requestEntityRemoval(EntityID entity)
 {
 	actionQueue.push_back(std::make_pair(Action::Remove, entity));
@@ -62,28 +68,27 @@ void EntityManager::registerComponents()
 	registerComponent<VelocityComponent>(Components::ID::VelocityComponent);
 	registerComponent<RenderComponent>(Components::ID::RenderComponent);
 	registerComponent<RangeComponent>(Components::ID::RangeComponent);
-	registerComponent<TargetableComponent>(Components::ID::TargetableComponent);
+	registerComponent<HealthComponent>(Components::ID::HealthComponent);
 	registerComponent<ShootComponent>(Components::ID::ShootComponent);
 	registerComponent<TargetComponent>(Components::ID::TargetComponent);
 	registerComponent<AIComponent>(Components::ID::AIComponent);
 	registerComponent<DamageComponent>(Components::ID::DamageComponent);
+	registerComponent<BoundComponent>(Components::ID::BoundComponent);
+	registerComponent<DirectionComponent>(Components::ID::DirectionComponent);
+	registerComponent<AnimationComponent>(Components::ID::AnimationComponent);
 }
 
 void EntityManager::initializeSystems()
 {
 	auto drawSystem  = std::make_unique<DrawSystem>();
-	auto shootSystem = std::make_unique<ShootSystem>();
-	auto moveSystem  = std::make_unique<MoveSystem>();
-	auto aiSystem    = std::make_unique<AISystem>();
-	auto dmgSystem   = std::make_unique<DamageSystem>();
-
 	renderer = drawSystem.get();
 
 	systems.push_back(std::move(drawSystem));
-	systems.push_back(std::move(shootSystem));
-	systems.push_back(std::move(moveSystem));
-	systems.push_back(std::move(aiSystem));
-	systems.push_back(std::move(dmgSystem));
+	systems.push_back(std::make_unique<ShootSystem>());
+	systems.push_back(std::make_unique<MoveSystem>());
+	systems.push_back(std::make_unique<AISystem>());
+	systems.push_back(std::make_unique<DamageSystem>());
+	systems.push_back(std::make_unique<AnimationSystem>());
 
 	for (auto &system : systems)
 	{
@@ -101,11 +106,25 @@ void EntityManager::addToSystems(EntityID entity)
 
 void EntityManager::removeEntity(EntityID entity)
 {
-	Components::ID temp = entities[entity]->getBits();
+	auto found = entities.find(entity);
+	if (found == entities.end()) return;
+
+	int temp = entities[entity]->getBits();
+
+	for(auto &e : entities)
+		if (e.second->hasComponent(Components::ID::TargetComponent))
+		{
+			auto target = static_cast<TargetComponent*>(e.second->getComponent(Components::ID::TargetComponent));
+			if (target->target && target->target->getID() == entities[entity]->getID())
+				target->target = nullptr;
+		}
 
 	for (auto &system : systems)
+	{
 		if (((system->getSystemBits() & temp) == system->getSystemBits()))
 			system->removeEntity(entity);
+	}
+	entities[entity]->clearComponents();
 
 	entities.erase(entity);
 	pool.removeID(entity);

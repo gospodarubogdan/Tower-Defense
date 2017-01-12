@@ -4,13 +4,14 @@
 #include "Label.hpp"
 #include "Button.hpp"
 #include "TowerTypes.hpp"
+#include "GameContext.hpp"
 
 namespace gui
 {
 	class HUD final : public Widget
 	{
 	public:
-		HUD(sf::RenderWindow &window);
+		HUD(States::Context context);
 
 		void handleEvent(const sf::Event &event) override;
 		void update(sf::Time dt) override;
@@ -20,7 +21,7 @@ namespace gui
 	private:
 		virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
-		sf::RenderWindow &window;
+		States::Context context;
 
 		sf::Texture texture;
 		sf::Font font;

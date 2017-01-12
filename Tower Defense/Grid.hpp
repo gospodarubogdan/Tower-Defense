@@ -10,7 +10,7 @@ public:
 
 	void draw();
 
-	Tile &getTile(int index);
+	Tile &getTile(int i, int j);
 
 private:
 	void loadFromCSV(const std::string &filename);
@@ -19,6 +19,7 @@ private:
 	sf::Texture texture;
 	std::vector<int> mapValues;
 	std::vector<Tile> tiles;
+	std::vector<std::vector<Tile>> matrix;
 	sf::RenderWindow &window;
 };
 

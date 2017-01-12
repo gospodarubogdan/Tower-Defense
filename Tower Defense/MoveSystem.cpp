@@ -16,7 +16,8 @@ void MoveSystem::update(sf::Time dt)
 		auto position = static_cast<PositionComponent*>(entity->getComponent(Components::ID::PositionComponent));
 		auto velocity = static_cast<VelocityComponent*>(entity->getComponent(Components::ID::VelocityComponent));
 		auto target   = static_cast<TargetComponent*>(entity->getComponent(Components::ID::TargetComponent));
-
+		
+		if (!target->target) continue;
 		auto targetPos = static_cast<PositionComponent*>(target->target->getComponent(Components::ID::PositionComponent));
 
 		sf::Vector2f direction(targetPos->x - position->x, targetPos->y - position->y);

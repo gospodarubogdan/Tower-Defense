@@ -28,11 +28,11 @@ private:
 	void placeTower();
 	bool validPosition();
 
-	TextureManager textureManager;
 
 	bool selected;
 	Tower::Type tower;
 	sf::RectangleShape placement;
+	sf::CircleShape range;
 
 	Camera camera;
 

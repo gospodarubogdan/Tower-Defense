@@ -3,6 +3,14 @@
 #include <SFML/Graphics.hpp>	
 #include "Component.hpp"
 
+enum class Direction : int
+{
+	Up = 0,
+	Down = 1,
+	Left = 2,
+	Right = 3
+};
+
 class PositionComponent : public Component
 {
 public:
@@ -40,11 +48,11 @@ public:
 	sf::Sprite sprite;
 };
 
-class TargetableComponent : public Component
+class HealthComponent : public Component
 {
 public:
 	int health;
-	Entity *parent;
+	sf::Sprite healthBar;
 };
 
 class AIComponent : public Component
@@ -57,4 +65,24 @@ class DamageComponent : public Component
 {
 public:
 	int damage;
+};
+
+class BoundComponent : public Component
+{
+public:
+	sf::RectangleShape box;
+};
+
+class DirectionComponent : public Component
+{
+public:
+	Direction dir;
+	bool changed;
+};
+
+class AnimationComponent : public Component
+{
+public:
+	int frame;
+	sf::Time elapsedTime;
 };

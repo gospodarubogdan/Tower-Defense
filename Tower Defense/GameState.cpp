@@ -6,35 +6,23 @@
 
 GameState::GameState(StateManager &stack, States::Context context)
 	: State(stack, context)
-	, entityManager(&textureManager)
+	, entityManager(context)
 	, camera(context)
-	, hud(*context.window)
+	, hud(context)
 	, map(TILE_SIZE, TILE_WORLD_SIZE)
 	, grid(*context.window)
 	, selected(false)
 {
 	//map.loadFromCSV("data/mapValues.csv");
 	//map.loadSheet("data/mapsheet.png");
-	textureManager.loadFromFile("mapSheet", "data/mapnospace.png");
-	textureManager.loadFromFile("mob", "data/test.png");
-	textureManager.loadFromFile("turret", "data/tower.png");
-	textureManager.loadFromFile("bullet", "data/bullet.png");
+	context.textureManager->loadFromFile("mapSheet", "data/mapnospace.png");
+	context.textureManager->loadFromFile("mob", "data/animtest.png");
+	context.textureManager->loadFromFile("turret", "data/tower2.png");
+	context.textureManager->loadFromFile("bullet", "data/bullet.png");
+	context.textureManager->loadFromFile("healthBar", "data/healthbar.png");
 
-	textureManager.getTexture("mapSheet").setSmooth(true);
-	map.setTexture(textureManager.getTexture("mapSheet"));
-
-	/*entityManager.registerComponent<PositionComponent>(Components::ID::PositionComponent);
-	entityManager.registerComponent<VelocityComponent>(Components::ID::VelocityComponent);
-	entityManager.registerComponent<RenderComponent>(Components::ID::RenderComponent);
-	entityManager.registerComponent<MoveComponent>(Components::ID::MoveComponent);
-	entityManager.registerComponent<RangeComponent>(Components::ID::RangeComponent);
-	entityManager.registerComponent<TargetableComponent>(Components::ID::TargetableComponent);
-	entityManager.registerComponent<ShootComponent>(Components::ID::ShootComponent);
-	entityManager.registerComponent<TargetComponent>(Components::ID::TargetComponent);
-
-	shootsystem.setManager(&entityManager);
-	ms.setManager(&entityManager);
-	ds.setManager(&entityManager);*/
+	context.textureManager->getTexture("mapSheet").setSmooth(true);
+	map.setTexture(context.textureManager->getTexture("mapSheet"));
 
 	for (int i = 0; i < 10; i++)
 	{
@@ -43,21 +31,26 @@ GameState::GameState(StateManager &stack, States::Context context)
 		entity.addComponent(Components::ID::VelocityComponent);
 		entity.addComponent(Components::ID::AIComponent);
 		entity.addComponent(Components::ID::RenderComponent);
-		entity.addComponent(Components::ID::TargetableComponent);
+		entity.addComponent(Components::ID::HealthComponent);
+		entity.addComponent(Components::ID::DirectionComponent);
+		entity.addComponent(Components::ID::AnimationComponent);
 
 		auto pos = static_cast<PositionComponent*>(entity.getComponent(Components::ID::PositionComponent));
 		pos->x = 222;
-		pos->y = i * -50;
+		pos->y = i * -100;
 
 		auto vel = static_cast<VelocityComponent*>(entity.getComponent(Components::ID::VelocityComponent));
-		vel->speed = 80.f;
+		vel->speed = 70.f;
 
 		auto render = static_cast<RenderComponent*>(entity.getComponent(Components::ID::RenderComponent));
-		render->sprite.setTexture(textureManager.getTexture("mob"));
-		render->sprite.setOrigin(sf::Vector2f(64.f, 64.f) / 2.f);
+		render->sprite.setTexture(getContext().textureManager->getTexture("mob"));
+		render->sprite.setTextureRect({ 0,0,32,32 });
+		render->sprite.setOrigin(sf::Vector2f(32.f, 32.f) / 2.f);
 
-		auto hp = static_cast<TargetableComponent*>(entity.getComponent(Components::ID::TargetableComponent));
+		auto hp = static_cast<HealthComponent*>(entity.getComponent(Components::ID::HealthComponent));
 		hp->health = 100;
+		hp->healthBar.setTexture(getContext().textureManager->getTexture("healthBar"));
+		hp->healthBar.setPosition(pos->x - 16, pos->y - 26);
 
 		//ms.addEntity(entity);
 		//ds.addEntity(entity);
@@ -66,6 +59,13 @@ GameState::GameState(StateManager &stack, States::Context context)
 	placement.setSize({ TILE_SIZE * 2, TILE_SIZE * 2 });
 	placement.setOrigin(0.f, TILE_SIZE * 2);
 	placement.setFillColor(sf::Color(0, 0, 0, 150));
+
+	range.setRadius(100.f);
+	range.setOrigin(range.getRadius(), range.getRadius());
+	range.setPosition(placement.getPosition().x + TILE_SIZE, placement.getPosition().y - TILE_SIZE);
+	range.setFillColor(sf::Color::Transparent);
+	range.setOutlineThickness(2.f);
+	range.setOutlineColor(sf::Color::Red);
 
 	//hud.setPosition(0.f, 400.f);
 }
@@ -104,6 +104,7 @@ bool GameState::update(sf::Time dt)
 	camera.update(dt);
 	//ms.update(dt);
 	entityManager.update(dt);
+	hud.update(dt);
 
 	if (selected)
 	{
@@ -112,7 +113,8 @@ bool GameState::update(sf::Time dt)
 	
 		placement.setPosition(std::floor(worldPos.x / TILE_SIZE) * TILE_SIZE, 
 			std::floor(worldPos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE);
-	
+
+		range.setPosition(placement.getPosition().x + TILE_SIZE, placement.getPosition().y - TILE_SIZE);
 	}
 
 	return false;
@@ -126,7 +128,11 @@ void GameState::draw()
 	grid.draw();
 	//ds.draw(*getContext().window);
 	entityManager.draw(*getContext().window);
-	if (selected) getContext().window->draw(placement);
+	if (selected)
+	{
+		getContext().window->draw(placement);
+		getContext().window->draw(range);
+	}
 
 	getContext().window->setView(hud.getView());
 	getContext().window->draw(hud);
@@ -134,6 +140,20 @@ void GameState::draw()
 
 void GameState::placeTower()
 {
+	int x = (placement.getPosition().x) / TILE_SIZE;
+	int y = (placement.getPosition().y - placement.getSize().y / 2) / TILE_SIZE;
+	const int dx[] = { 1, 1, 0, 0 };
+	const int dy[] = { -1, 0, -1, 0 };
+
+	for (int k = 0; k < 4; k++)
+	{
+		int i = y + dy[k];
+		int j = x + dx[k];
+
+		Tile &temp = grid.getTile(i, j);
+		temp.setState(Tile::Type::Invalid);
+	}
+
 	auto &entity = entityManager.createEntity();
 	entity.addComponent(Components::ID::PositionComponent);
 	entity.addComponent(Components::ID::RenderComponent);
@@ -146,13 +166,15 @@ void GameState::placeTower()
 	pos->y = placement.getPosition().y - placement.getSize().y;
 
 	auto render = static_cast<RenderComponent*>(entity.getComponent(Components::ID::RenderComponent));
-	render->sprite.setTexture(textureManager.getTexture("turret"));
+	render->sprite.setTexture(getContext().textureManager->getTexture("turret"));
 
 	auto range = static_cast<RangeComponent*>(entity.getComponent(Components::ID::RangeComponent));
 	range->range.setRadius(100.f);
-	range->range.setOrigin(range->range.getRadius() / 2, range->range.getRadius() / 2);
-	range->range.setPosition(pos->x, pos->y);
-	range->range.setFillColor(sf::Color(0, 0, 0, 100));
+	range->range.setOrigin(range->range.getRadius(), range->range.getRadius());
+	range->range.setPosition(pos->x + TILE_SIZE, pos->y + TILE_SIZE);
+	range->range.setFillColor(sf::Color::Transparent);
+	range->range.setOutlineThickness(2.f);
+	range->range.setOutlineColor(sf::Color::Red);
 
 	auto shoot = static_cast<ShootComponent*>(entity.getComponent(Components::ID::ShootComponent));
 	shoot->attackSpeed = 1.f;
@@ -162,24 +184,22 @@ void GameState::placeTower()
 
 bool GameState::validPosition()
 {
-	return true;
-
-	int x = placement.getPosition().x / TILE_SIZE;
+	int x = (placement.getPosition().x) / TILE_SIZE;
 	int y = (placement.getPosition().y - placement.getSize().y / 2) / TILE_SIZE;
 	const int dx[] = { 1, 1, 0, 0 };
 	const int dy[] = { -1, 0, -1, 0 };
-	//x++;
-	std::cout << placement.getPosition().x << ' ' << placement.getPosition().y << std::endl;
-	std::cout << x << ' ' << y << std::endl;
-	Tile &temp = grid.getTile(x * MAP_HEIGHT + y);
-	std::cout << temp.getPosition().x << ' ' << temp.getPosition().y << std::endl << std::endl;
-	/*for (int i = 0; i < 4; i++)
+
+	for (int k = 0; k < 4; k++)
 	{
-		std::cout << x + dx[i] << ' ' << y + dy[i] << std::endl;
-		Tile &temp = grid.getTile((x + dx[i]) * MAP_WIDTH + y + dy[i]);
+		int i = y + dy[k];
+		int j = x + dx[k];
+		if (i < 0 || i > MAP_HEIGHT || j < 0 || j > MAP_WIDTH)
+			continue;
+
+		Tile &temp = grid.getTile(i, j);
 		if (temp.getState() == Tile::Type::Invalid)
 			return false;
-	}*/
+	}
 
 	return true;
 }

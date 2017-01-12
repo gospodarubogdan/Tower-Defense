@@ -8,6 +8,7 @@
 #include "ComponentsData.hpp"
 
 #include "TextureManager.hpp"
+#include "GameContext.hpp"
 
 #include <assert.h>
 #include <vector>
@@ -26,7 +27,7 @@ public:
 
 	using EntityID = unsigned int;
 
-	EntityManager(TextureManager *textureManager);
+	EntityManager(States::Context context);
 	~EntityManager() = default;
 
 	void update(sf::Time dt);
@@ -38,6 +39,7 @@ public:
 	Entity &createEntity();
 
 	std::vector<Entity*> getEntities(Components::ID component);
+	States::Context getContext() const;
 
 	void requestEntityRemoval(EntityID entity);
 	//void deleteEntities();
@@ -61,6 +63,7 @@ private:
 	void removeComponent(Entity &entity, Components::ID component);
 	Component *getComponent(Entity &entity, Components::ID component);
 
+	States::Context context;
 	EntityPool pool;
 
 	TextureManager *textureManager;

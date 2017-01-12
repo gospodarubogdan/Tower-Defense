@@ -34,7 +34,7 @@ void ShootSystem::update(sf::Time dt)
 
 			if (target->target != nullptr)
 			{
-				createProjectile(target->target);
+				createProjectile(position->x, position->y, target->target);
 			}
 		}
 	}
@@ -42,7 +42,7 @@ void ShootSystem::update(sf::Time dt)
 
 void ShootSystem::selectTarget(const sf::CircleShape &range, Entity *&target)
 {
-	auto &entities = manager->getEntities(Components::ID::TargetableComponent);
+	auto &entities = manager->getEntities(Components::ID::HealthComponent);
 
 	for (const auto &e : entities)
 	{
@@ -50,16 +50,13 @@ void ShootSystem::selectTarget(const sf::CircleShape &range, Entity *&target)
 
 		if (render->sprite.getGlobalBounds().intersects(range.getGlobalBounds()))
 		{
-			auto parent = static_cast<TargetableComponent*>(e->getComponent(Components::ID::TargetableComponent));
-
-			parent->parent = target;
 			target = e;
 			break;
 		}
 	}
 }
 
-void ShootSystem::createProjectile(Entity *target)
+void ShootSystem::createProjectile(int x, int y, Entity *target)
 {
 	auto &entity = manager->createEntity();
 	entity.addComponent(Components::ID::PositionComponent);
@@ -71,17 +68,17 @@ void ShootSystem::createProjectile(Entity *target)
 	std::cout << "Bullet created...\n";
 
 	auto pos = static_cast<PositionComponent*>(entity.getComponent(Components::ID::PositionComponent));
-	pos->x = 200;
-	pos->y = 200;
+	pos->x = x;
+	pos->y = y;
 
 	auto vel = static_cast<VelocityComponent*>(entity.getComponent(Components::ID::VelocityComponent));
 	vel->speed = 250.f;
 
 	auto dmg = static_cast<DamageComponent*>(entity.getComponent(Components::ID::DamageComponent));
-	dmg->damage = 20;
+	dmg->damage = 60;
 
 	auto render = static_cast<RenderComponent*>(entity.getComponent(Components::ID::RenderComponent));
-	render->sprite.setTexture(textureManager->getTexture("bullet"));
+	render->sprite.setTexture(manager->getContext().textureManager->getTexture("bullet"));
 
 	auto targetComp = static_cast<TargetComponent*>(entity.getComponent(Components::ID::TargetComponent));
 	

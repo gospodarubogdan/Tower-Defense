@@ -20,9 +20,19 @@ void Tile::setTexture(const sf::Texture &texture, sf::IntRect rect)
 	sprite.setTextureRect(rect);
 }
 
+void Tile::setTileNumber(int number)
+{
+	tileNumber = number;
+}
+
 const Tile::Type Tile::getState() const
 {
 	return state;
+}
+
+const int Tile::getTileNumber() const
+{
+	return tileNumber;
 }
 
 void Tile::draw(sf::RenderTarget &target, sf::RenderStates states) const

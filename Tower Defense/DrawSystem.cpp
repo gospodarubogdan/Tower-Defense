@@ -27,6 +27,12 @@ void DrawSystem::draw(sf::RenderWindow &window)
 			auto circle = static_cast<RangeComponent*>(entity->getComponent(Components::ID::RangeComponent));
 			window.draw(circle->range);
 		}
+
+		if (entity->hasComponent(Components::ID::HealthComponent))
+		{
+			auto bar = static_cast<HealthComponent*>(entity->getComponent(Components::ID::HealthComponent));
+			window.draw(bar->healthBar);
+		}
 	}
 }
 

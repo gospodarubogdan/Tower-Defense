@@ -12,7 +12,7 @@ public:
 
 private:
 	void selectTarget(const sf::CircleShape &range, Entity *&target);
-	void createProjectile(Entity *target);
+	void createProjectile(int x, int y, Entity *target);
 	bool isTargetInRange(const sf::CircleShape &range, Entity *target);
 };
 

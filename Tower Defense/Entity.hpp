@@ -26,14 +26,15 @@ public:
 
 	void addComponent(Components::ID component);
 	void removeComponent(Components::ID component);
+	void clearComponents();
 
 	Component *getComponent(Components::ID component);
-	Components::ID getBits() const;
+	int getBits() const;
 
 private:
 	EntityManager *manager;
 	unsigned int ID;
-	Components::ID componentBits;
+	int componentBits;
 
 	std::unordered_map<Components::ID, Component::Ptr> components;
 };

@@ -22,6 +22,8 @@ AISystem::AISystem()
 	bitset |= Components::ID::PositionComponent;
 	bitset |= Components::ID::VelocityComponent;
 	bitset |= Components::ID::AIComponent;
+	bitset |= Components::ID::DirectionComponent;
+	bitset |= Components::ID::HealthComponent;
 }
 
 void AISystem::update(sf::Time dt)
@@ -31,6 +33,8 @@ void AISystem::update(sf::Time dt)
 		auto position = static_cast<PositionComponent*>(entity->getComponent(Components::ID::PositionComponent));
 		auto velocity = static_cast<VelocityComponent*>(entity->getComponent(Components::ID::VelocityComponent));
 		auto ai = static_cast<AIComponent*>(entity->getComponent(Components::ID::AIComponent));
+		auto dir      = static_cast<DirectionComponent*>(entity->getComponent(Components::ID::DirectionComponent));
+		auto hp = static_cast<HealthComponent*>(entity->getComponent(Components::ID::HealthComponent));
 
 		if (position->x == checkpoints[ai->index].x && position->y == checkpoints[ai->index].y)
 			ai->index++;
@@ -47,5 +51,27 @@ void AISystem::update(sf::Time dt)
 		sf::Vector2f factor(unitVector * velocity->speed * dt.asSeconds());
 		position->x += factor.x;
 		position->y += factor.y;
+
+		hp->healthBar.setPosition(position->x - 16, position->y - 26);
+
+		updateDirection(dir, factor);
 	}
+}
+
+void AISystem::updateDirection(DirectionComponent *direction, const sf::Vector2f &vector)
+{
+	auto temp = direction->dir;
+	if (abs(vector.y) > abs(vector.x))
+	{
+		if (vector.y > 0)
+			direction->dir = Direction::Down;
+		else direction->dir = Direction::Up;
+	}
+	else
+	{
+		if (vector.x > 0)
+			direction->dir = Direction::Right;
+		else direction->dir = Direction::Left;
+	}
+	if (temp != direction->dir) direction->changed = true;
 }

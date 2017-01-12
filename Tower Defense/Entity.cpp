@@ -31,6 +31,13 @@ void Entity::addComponent(Components::ID component)
 void Entity::removeComponent(Components::ID component)
 {
 	//manager->removeComponent(*this, component);
+	componentBits &= ~(1 << component);
+}
+
+void Entity::clearComponents()
+{
+	componentBits = 0;
+	components.clear();
 }
 
 Component *Entity::getComponent(Components::ID component)
@@ -43,7 +50,7 @@ Component *Entity::getComponent(Components::ID component)
 	//return manager->getComponent(*this, component);
 }
 
-Components::ID Entity::getBits() const
+int Entity::getBits() const
 {
 	return componentBits;
 }

@@ -2,6 +2,7 @@
 #include "Entity.hpp"
 #include "ComponentsData.hpp"
 #include "EntityManager.hpp"	
+#include "Gold.hpp"
 
 DamageSystem::DamageSystem()
 {
@@ -19,22 +20,36 @@ void DamageSystem::update(sf::Time dt)
 		auto target   = static_cast<TargetComponent*>(entity->getComponent(Components::ID::TargetComponent));
 
 		// Target's position
+		if (!target->target)
+		{
+			manager->requestEntityRemoval(entity->getID());
+			continue;
+		}
+
 		auto targetPos = static_cast<PositionComponent*>(target->target->getComponent(Components::ID::PositionComponent));
 
-		if (position->x == targetPos->x && position->y == targetPos->y)
+		//if (position->x == targetPos->x && position->y == targetPos->y)
+		if(isCollision(entity, target->target))
 		{
 			manager->requestEntityRemoval(entity->getID());
 			
-			auto hp = static_cast<TargetableComponent*>(target->target->getComponent(Components::ID::TargetableComponent));
+			auto hp = static_cast<HealthComponent*>(target->target->getComponent(Components::ID::HealthComponent));
 			hp->health -= dmg->damage;
+			hp->healthBar.setScale(static_cast<float>(hp->health) / 100, 1);
 
 			if (hp->health <= 0)
 			{
+				manager->getContext().gold->addGold(4);
 				manager->requestEntityRemoval(target->target->getID());
-				auto turret = static_cast<TargetComponent*>(hp->parent->getComponent(Components::ID::TargetComponent));
-				// make the entity pointer to nullptr inside entitymanager when removing the entity
-				turret->target = nullptr;
 			}
 		}
 	}
+}
+
+bool DamageSystem::isCollision(Entity *projectile, Entity *target)
+{
+	auto targetRender = static_cast<RenderComponent*>(target->getComponent(Components::ID::RenderComponent));
+	auto projRender = static_cast<RenderComponent*>(projectile->getComponent(Components::ID::RenderComponent));
+
+	return targetRender->sprite.getGlobalBounds().intersects(projRender->sprite.getGlobalBounds());
 }

@@ -1,9 +1,9 @@
 #include "HUD.hpp"
-
+#include "Gold.hpp"
 using namespace gui;
 
-HUD::HUD(sf::RenderWindow &window)
-	: window(window)
+HUD::HUD(States::Context context)
+	: context(context)
 {
 	//hudView.setSize(window.getSize().x, 600);
 	hudView.setViewport({ 0.f, 0.8f, 1.f, 1.f });
@@ -15,7 +15,7 @@ HUD::HUD(sf::RenderWindow &window)
 	font.loadFromFile("data/font.ttf");
 
 	selectedTurret.setFont(font);
-	selectedTurret.setText("Turret selected");
+	selectedTurret.setText("Gold: " + std::to_string(context.gold->getGold()));
 	selectedTurret.setPosition(10.f, 200.f);
 	
 }
@@ -26,6 +26,7 @@ void HUD::handleEvent(const sf::Event &event)
 
 void HUD::update(sf::Time dt)
 {
+	selectedTurret.setText("Gold: " + std::to_string(context.gold->getGold()));
 }
 
 const sf::View &gui::HUD::getView()

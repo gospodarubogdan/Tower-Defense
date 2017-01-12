@@ -17,12 +17,15 @@ public:
 
 	void setState(Type state);
 	void setTexture(const sf::Texture &texture, sf::IntRect rect);
+	void setTileNumber(int number);
 
 	const Type getState() const;
+	const int getTileNumber() const;
 
 private:
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
+	int tileNumber;
 	Type state;
 	sf::Sprite sprite;
 	sf::Vector2i position;

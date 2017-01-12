@@ -11,5 +11,6 @@ public:
 	void update(sf::Time dt) override;
 
 private:
+	bool isCollision(Entity *projectile, Entity *target);
 };
 
