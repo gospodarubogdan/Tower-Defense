@@ -13,10 +13,12 @@ namespace gui
 	public:
 		HUD(States::Context context);
 
+		void init();
+
 		void handleEvent(const sf::Event &event) override;
 		void update(sf::Time dt) override;
 
-		const sf::View &getView();
+		void resetTowerType();
 		Tower::Type getTowerType(const sf::Vector2i &mousePos);
 	private:
 		virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
@@ -26,10 +28,11 @@ namespace gui
 		sf::Texture texture;
 		sf::Font font;
 
-		sf::View hudView;
-		Label turretInfo;
-		Label selectedTurret;
-
-
+		Tower::Type turret;
+		sf::Text totalGold;
+		Label singleTurret;
+		Label splashTurret;
+		Label frostTurret;
+		sf::RectangleShape background;
 	};
 }

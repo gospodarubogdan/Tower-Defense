@@ -2,6 +2,8 @@
 
 #include "System.hpp"
 
+class Entity;
+
 class ShootSystem : public System
 {
 public:
@@ -12,7 +14,7 @@ public:
 
 private:
 	void selectTarget(const sf::CircleShape &range, Entity *&target);
-	void createProjectile(int x, int y, Entity *target);
+	void createProjectile(Entity *turret, int x, int y, Entity *target);
 	bool isTargetInRange(const sf::CircleShape &range, Entity *target);
 };
 

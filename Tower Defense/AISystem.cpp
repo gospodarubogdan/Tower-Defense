@@ -15,7 +15,12 @@ AISystem::AISystem()
 	int x, y;
 	while (fin >> x >> y)
 	{
-		checkpoints.push_back({ x, y });
+		sf::RectangleShape shape;
+		shape.setSize({ 10, 10 });
+		shape.setOrigin(5, 5);
+		shape.setPosition(x, y);
+
+		checkpoints.push_back(shape);
 	}
 	fin.close();
 
@@ -25,7 +30,7 @@ AISystem::AISystem()
 	bitset |= Components::ID::DirectionComponent;
 	bitset |= Components::ID::HealthComponent;
 }
-
+#include <iostream>
 void AISystem::update(sf::Time dt)
 {
 	for (auto &entity : entities)
@@ -35,20 +40,29 @@ void AISystem::update(sf::Time dt)
 		auto ai = static_cast<AIComponent*>(entity->getComponent(Components::ID::AIComponent));
 		auto dir      = static_cast<DirectionComponent*>(entity->getComponent(Components::ID::DirectionComponent));
 		auto hp = static_cast<HealthComponent*>(entity->getComponent(Components::ID::HealthComponent));
-
-		if (position->x == checkpoints[ai->index].x && position->y == checkpoints[ai->index].y)
+		
+		if (checkpointReached(position->x, position->y, ai->index))
 			ai->index++;
 
 		if (ai->index == CHECKPOINTS)
 			; // life--;
 
+		velocity->duration += dt;
+		if (velocity->duration.asSeconds() >= 2.f)
+		{
+			velocity->duration = sf::Time::Zero;
+			velocity->speed = 70.f;
+		}
+
 		int index = ai->index;
-		sf::Vector2f direction(checkpoints[index].x - position->x, checkpoints[index].y - position->y);
+		sf::Vector2f checkpointPos = checkpoints[index].getPosition();
+		sf::Vector2f direction(checkpointPos.x - position->x, checkpointPos.y - position->y);
 
 		float magnitude = sqrt((direction.x * direction.x) + (direction.y * direction.y));
 		sf::Vector2f unitVector(direction.x / magnitude, direction.y / magnitude);
 
 		sf::Vector2f factor(unitVector * velocity->speed * dt.asSeconds());
+
 		position->x += factor.x;
 		position->y += factor.y;
 
@@ -74,4 +88,9 @@ void AISystem::updateDirection(DirectionComponent *direction, const sf::Vector2f
 		else direction->dir = Direction::Left;
 	}
 	if (temp != direction->dir) direction->changed = true;
+}
+
+bool AISystem::checkpointReached(float x, float y, int index)
+{
+	return checkpoints[index].getGlobalBounds().contains({x, y});
 }

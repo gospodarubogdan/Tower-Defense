@@ -25,9 +25,21 @@ public:
 	void draw() override;
 
 private:
-	void placeTower();
+	void placeTower(Tower::Type type);
 	bool validPosition();
 
+	void readLevelData();
+
+	struct LevelData
+	{
+		int numberOfMinions;
+		int goldPerMinion;
+		int hp;
+		bool immuneToSlow;
+		int movementSpeed;
+	};
+
+	std::vector<LevelData> levelsData;
 
 	bool selected;
 	Tower::Type tower;

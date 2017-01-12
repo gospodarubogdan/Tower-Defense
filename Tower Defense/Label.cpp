@@ -8,6 +8,11 @@ Label::Label()
 
 void Label::handleEvent(const sf::Event &event)
 {
+	sf::FloatRect rect = sprite.getGlobalBounds();
+	/*rect.left = getPosition().x;
+	rect.top = getPosition().y;
+	rect.width = sprite.getLocalBounds().width;
+	rect.height = sprite.getLocalBounds().height;*/
 }
 
 void Label::update(sf::Time dt)
@@ -28,6 +33,16 @@ void Label::setText(const std::string &text)
 void Label::setFont(const sf::Font &font)
 {
 	text.setFont(font);
+}
+
+const bool gui::Label::isMouseOver(const sf::Vector2i &mouse) const
+{
+	sf::FloatRect rect;
+	rect.left = getPosition().x;
+	rect.top = getPosition().y;
+	rect.width = sprite.getLocalBounds().width;
+	rect.height = sprite.getLocalBounds().height;
+	return rect.contains(static_cast<sf::Vector2f>(mouse));
 }
 
 void Label::draw(sf::RenderTarget &target, sf::RenderStates states) const

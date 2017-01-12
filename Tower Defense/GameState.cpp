@@ -4,6 +4,8 @@
 #include "MoveSystem.hpp"
 #include "DrawSystem.hpp"
 
+#include <fstream>
+
 GameState::GameState(StateManager &stack, States::Context context)
 	: State(stack, context)
 	, entityManager(context)
@@ -17,14 +19,16 @@ GameState::GameState(StateManager &stack, States::Context context)
 	//map.loadSheet("data/mapsheet.png");
 	context.textureManager->loadFromFile("mapSheet", "data/mapnospace.png");
 	context.textureManager->loadFromFile("mob", "data/animtest.png");
-	context.textureManager->loadFromFile("turret", "data/tower2.png");
+	context.textureManager->loadFromFile("singleTarget", "data/singletarget.png");
+	context.textureManager->loadFromFile("splash", "data/splash.png");
+	context.textureManager->loadFromFile("frost", "data/frost.png");
 	context.textureManager->loadFromFile("bullet", "data/bullet.png");
 	context.textureManager->loadFromFile("healthBar", "data/healthbar.png");
 
 	context.textureManager->getTexture("mapSheet").setSmooth(true);
 	map.setTexture(context.textureManager->getTexture("mapSheet"));
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		auto &entity = entityManager.createEntity();
 		entity.addComponent(Components::ID::PositionComponent);
@@ -48,8 +52,10 @@ GameState::GameState(StateManager &stack, States::Context context)
 		render->sprite.setOrigin(sf::Vector2f(32.f, 32.f) / 2.f);
 
 		auto hp = static_cast<HealthComponent*>(entity.getComponent(Components::ID::HealthComponent));
-		hp->health = 100;
-		hp->healthBar.setTexture(getContext().textureManager->getTexture("healthBar"));
+		hp->health = 2500;
+		//hp->healthBar.setTexture(getContext().textureManager->getTexture("healthBar"));
+		hp->healthBar.setFillColor(sf::Color::Green);
+		hp->healthBar.setSize({ 32, 10 });
 		hp->healthBar.setPosition(pos->x - 16, pos->y - 26);
 
 		//ms.addEntity(entity);
@@ -60,40 +66,37 @@ GameState::GameState(StateManager &stack, States::Context context)
 	placement.setOrigin(0.f, TILE_SIZE * 2);
 	placement.setFillColor(sf::Color(0, 0, 0, 150));
 
-	range.setRadius(100.f);
+	range.setRadius(150.f);
 	range.setOrigin(range.getRadius(), range.getRadius());
 	range.setPosition(placement.getPosition().x + TILE_SIZE, placement.getPosition().y - TILE_SIZE);
 	range.setFillColor(sf::Color::Transparent);
 	range.setOutlineThickness(2.f);
 	range.setOutlineColor(sf::Color::Red);
 
-	//hud.setPosition(0.f, 400.f);
+	hud.init();
 }
 
 bool GameState::handleEvent(const sf::Event &event)
 {
 	camera.handleEvent(event);
+	hud.handleEvent(event);
 
 	sf::Vector2i mousePos = sf::Mouse::getPosition(*getContext().window);
 	if (event.type == sf::Event::MouseButtonPressed
 		&& event.key.code == sf::Mouse::Left)
 	{
-		if (selected && validPosition())
+		if (mousePos.x < 480 && selected && validPosition())
 		{
-			placeTower();
+			placeTower(tower);
 			selected = false;
-		}
-		else
-		{
-			tower = hud.getTowerType(mousePos);
-			if (tower != Tower::Type::None)
-				selected = true;
+			hud.resetTowerType();
 		}
 	}
 	else if (event.type == sf::Event::MouseButtonPressed
 		&& event.key.code == sf::Mouse::Right)
 	{
 		selected = false;
+		hud.resetTowerType();
 	}
 
 	return false;
@@ -106,15 +109,21 @@ bool GameState::update(sf::Time dt)
 	entityManager.update(dt);
 	hud.update(dt);
 
+	sf::Vector2i pixelPos = sf::Mouse::getPosition(*getContext().window);
 	if (selected)
 	{
-		sf::Vector2i pixelPos = sf::Mouse::getPosition(*getContext().window);
 		sf::Vector2f worldPos = getContext().window->mapPixelToCoords(pixelPos, camera.getView());
 	
 		placement.setPosition(std::floor(worldPos.x / TILE_SIZE) * TILE_SIZE, 
 			std::floor(worldPos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE);
 
 		range.setPosition(placement.getPosition().x + TILE_SIZE, placement.getPosition().y - TILE_SIZE);
+	}
+	else
+	{
+		tower = hud.getTowerType(pixelPos);
+		if (tower != Tower::Type::None)
+			selected = true;
 	}
 
 	return false;
@@ -126,7 +135,6 @@ void GameState::draw()
 	getContext().window->setView(camera.getView());
 
 	grid.draw();
-	//ds.draw(*getContext().window);
 	entityManager.draw(*getContext().window);
 	if (selected)
 	{
@@ -134,11 +142,10 @@ void GameState::draw()
 		getContext().window->draw(range);
 	}
 
-	getContext().window->setView(hud.getView());
 	getContext().window->draw(hud);
 }
 
-void GameState::placeTower()
+void GameState::placeTower(Tower::Type type)
 {
 	int x = (placement.getPosition().x) / TILE_SIZE;
 	int y = (placement.getPosition().y - placement.getSize().y / 2) / TILE_SIZE;
@@ -160,16 +167,29 @@ void GameState::placeTower()
 	entity.addComponent(Components::ID::RangeComponent);
 	entity.addComponent(Components::ID::ShootComponent);
 	entity.addComponent(Components::ID::TargetComponent);
+	if (type == Tower::Type::Splash)
+		entity.addComponent(Components::ID::SplashComponent);
+	
+	if (type == Tower::Type::Frost)
+	{
+		entity.addComponent(Components::ID::SlowComponent);
+		entity.addComponent(Components::ID::SplashComponent);
+	}
 
 	auto pos = static_cast<PositionComponent*>(entity.getComponent(Components::ID::PositionComponent));
 	pos->x = placement.getPosition().x;
 	pos->y = placement.getPosition().y - placement.getSize().y;
 
 	auto render = static_cast<RenderComponent*>(entity.getComponent(Components::ID::RenderComponent));
-	render->sprite.setTexture(getContext().textureManager->getTexture("turret"));
+	
+	if(type == Tower::Type::SingleTarget)
+		render->sprite.setTexture(getContext().textureManager->getTexture("singleTarget"));
+	else if(type == Tower::Type::Splash)
+		render->sprite.setTexture(getContext().textureManager->getTexture("splash"));
+	else render->sprite.setTexture(getContext().textureManager->getTexture("frost"));
 
 	auto range = static_cast<RangeComponent*>(entity.getComponent(Components::ID::RangeComponent));
-	range->range.setRadius(100.f);
+	range->range.setRadius(150.f);
 	range->range.setOrigin(range->range.getRadius(), range->range.getRadius());
 	range->range.setPosition(pos->x + TILE_SIZE, pos->y + TILE_SIZE);
 	range->range.setFillColor(sf::Color::Transparent);
@@ -177,9 +197,8 @@ void GameState::placeTower()
 	range->range.setOutlineColor(sf::Color::Red);
 
 	auto shoot = static_cast<ShootComponent*>(entity.getComponent(Components::ID::ShootComponent));
-	shoot->attackSpeed = 1.f;
-
-	//ds.addEntity(entity);
+	if (type == Tower::Type::SingleTarget) shoot->attackSpeed = 0.4f;
+	else shoot->attackSpeed = 1.f;
 }
 
 bool GameState::validPosition()
@@ -202,4 +221,8 @@ bool GameState::validPosition()
 	}
 
 	return true;
+}
+
+void GameState::readLevelData()
+{
 }

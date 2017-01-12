@@ -34,7 +34,7 @@ void ShootSystem::update(sf::Time dt)
 
 			if (target->target != nullptr)
 			{
-				createProjectile(position->x, position->y, target->target);
+				createProjectile(entity, position->x, position->y, target->target);
 			}
 		}
 	}
@@ -56,7 +56,7 @@ void ShootSystem::selectTarget(const sf::CircleShape &range, Entity *&target)
 	}
 }
 
-void ShootSystem::createProjectile(int x, int y, Entity *target)
+void ShootSystem::createProjectile(Entity *turret, int x, int y, Entity *target)
 {
 	auto &entity = manager->createEntity();
 	entity.addComponent(Components::ID::PositionComponent);
@@ -64,8 +64,6 @@ void ShootSystem::createProjectile(int x, int y, Entity *target)
 	entity.addComponent(Components::ID::RenderComponent);
 	entity.addComponent(Components::ID::DamageComponent);
 	entity.addComponent(Components::ID::TargetComponent);
-
-	std::cout << "Bullet created...\n";
 
 	auto pos = static_cast<PositionComponent*>(entity.getComponent(Components::ID::PositionComponent));
 	pos->x = x;
@@ -75,19 +73,37 @@ void ShootSystem::createProjectile(int x, int y, Entity *target)
 	vel->speed = 250.f;
 
 	auto dmg = static_cast<DamageComponent*>(entity.getComponent(Components::ID::DamageComponent));
-	dmg->damage = 60;
+	dmg->damage = 40;
 
 	auto render = static_cast<RenderComponent*>(entity.getComponent(Components::ID::RenderComponent));
 	render->sprite.setTexture(manager->getContext().textureManager->getTexture("bullet"));
 
 	auto targetComp = static_cast<TargetComponent*>(entity.getComponent(Components::ID::TargetComponent));
-	
 	targetComp->target = target;
+
+	if (turret->hasComponent(Components::ID::SplashComponent))
+	{
+		entity.addComponent(Components::ID::SplashComponent);
+
+		auto splashComp = static_cast<SplashComponent*>(entity.getComponent(Components::ID::SplashComponent));
+		splashComp->range = 150.f;
+
+		dmg->damage = 20;
+	}
+
+	if (turret->hasComponent(Components::ID::SlowComponent))
+	{
+		entity.addComponent(Components::ID::SlowComponent);
+
+		auto slow = static_cast<SlowComponent*>(entity.getComponent(Components::ID::SlowComponent));
+		slow->speed = 35.f;
+		std::cout << "slow comp";
+		dmg->damage = 10;
+	}
 }
 
 bool ShootSystem::isTargetInRange(const sf::CircleShape &range, Entity *target)
 {
-	//std::cout << "is in range\n";
 	auto render = static_cast<RenderComponent*>(target->getComponent(Components::ID::RenderComponent));
 	return render->sprite.getGlobalBounds().intersects(range.getGlobalBounds());
 }

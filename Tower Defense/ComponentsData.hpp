@@ -14,13 +14,14 @@ enum class Direction : int
 class PositionComponent : public Component
 {
 public:
-	int x, y;
+	float x, y;
 };
 
 class VelocityComponent : public Component
 {
 public:
 	float speed;
+	sf::Time duration;
 };
 
 class RangeComponent : public Component
@@ -52,7 +53,8 @@ class HealthComponent : public Component
 {
 public:
 	int health;
-	sf::Sprite healthBar;
+	//sf::Sprite healthBar;
+	sf::RectangleShape healthBar;
 };
 
 class AIComponent : public Component
@@ -85,4 +87,16 @@ class AnimationComponent : public Component
 public:
 	int frame;
 	sf::Time elapsedTime;
+};
+
+class SplashComponent : public Component
+{
+public:
+	float range;
+};
+
+class SlowComponent : public Component
+{
+public:
+	float speed;
 };

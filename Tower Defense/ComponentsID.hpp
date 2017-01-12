@@ -15,16 +15,13 @@ namespace Components
 		DamageComponent     = 1 << 8,
 		BoundComponent      = 1 << 9,
 		DirectionComponent  = 1 << 10,
-		AnimationComponent  = 1 << 11
+		AnimationComponent  = 1 << 11,
+		SplashComponent     = 1 << 12,
+		SlowComponent       = 1 << 13
 	};
 }
 
 inline Components::ID &operator|=(Components::ID &a, Components::ID b) 
 {
 	return a = static_cast<Components::ID> (a | b);
-}
-
-inline Components::ID &operator&=(Components::ID &a, Components::ID b)
-{
-	return a = static_cast<Components::ID> (a & b);
 }

@@ -25,7 +25,7 @@ void DrawSystem::draw(sf::RenderWindow &window)
 		if (entity->hasComponent(Components::ID::RangeComponent))
 		{
 			auto circle = static_cast<RangeComponent*>(entity->getComponent(Components::ID::RangeComponent));
-			window.draw(circle->range);
+			//window.draw(circle->range);
 		}
 
 		if (entity->hasComponent(Components::ID::HealthComponent))

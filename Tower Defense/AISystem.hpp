@@ -14,7 +14,8 @@ public:
 
 private:
 	void updateDirection(DirectionComponent *direction, const sf::Vector2f &vector);
+	bool checkpointReached(float x, float y, int index);
 
-	std::vector<sf::Vector2i> checkpoints;
+	std::vector<sf::RectangleShape> checkpoints;
 };
 

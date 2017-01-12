@@ -12,9 +12,6 @@ Camera::Camera(States::Context context)
 	//view.setViewport({ 0.f, 0.f, 1.f, 1.f });
 
 	context.window->setView(view);
-
-
-	std::cout << windowSize.x << ' ' << windowSize.y << std::endl;
 }
 
 void Camera::handleEvent(const sf::Event &event)
@@ -78,7 +75,7 @@ void Camera::update(sf::Time dt)
 
 
 		if (view.getCenter().y - view.getSize().y / 2 < 0) view.setCenter(view.getCenter().x, view.getSize().y / 2);
-		else if (view.getCenter().y + view.getSize().y / 2 > MAP_HEIGHT * TILE_WORLD_SIZE + 150) view.setCenter(view.getCenter().x, (MAP_HEIGHT * TILE_WORLD_SIZE + 150) - view.getSize().y / 2);
+		else if (view.getCenter().y + view.getSize().y / 2 > MAP_HEIGHT * TILE_WORLD_SIZE + 120) view.setCenter(view.getCenter().x, (MAP_HEIGHT * TILE_WORLD_SIZE + 120) - view.getSize().y / 2);
 		
 		context.window->setView(view);
 	}

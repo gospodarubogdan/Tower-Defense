@@ -76,6 +76,8 @@ void EntityManager::registerComponents()
 	registerComponent<BoundComponent>(Components::ID::BoundComponent);
 	registerComponent<DirectionComponent>(Components::ID::DirectionComponent);
 	registerComponent<AnimationComponent>(Components::ID::AnimationComponent);
+	registerComponent<SplashComponent>(Components::ID::SplashComponent);
+	registerComponent<SlowComponent>(Components::ID::SlowComponent);
 }
 
 void EntityManager::initializeSystems()
