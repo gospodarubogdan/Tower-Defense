@@ -13,11 +13,13 @@ namespace Components
 		RenderComponent     = 1 << 6,
 		AIComponent         = 1 << 7,
 		DamageComponent     = 1 << 8,
-		BoundComponent      = 1 << 9,
+		SelectableComponent = 1 << 9,
 		DirectionComponent  = 1 << 10,
 		AnimationComponent  = 1 << 11,
 		SplashComponent     = 1 << 12,
-		SlowComponent       = 1 << 13
+		SlowComponent       = 1 << 13,
+		GoldComponent       = 1 << 14,
+		UpgradeComponent    = 1 << 15
 	};
 }
 

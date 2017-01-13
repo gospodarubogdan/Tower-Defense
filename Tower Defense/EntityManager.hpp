@@ -4,6 +4,7 @@
 #include "Entity.hpp"
 #include "EntityPool.hpp"
 #include "System.hpp"
+#include "GameContext.hpp"
 
 #include "ComponentsData.hpp"
 
@@ -27,7 +28,7 @@ public:
 
 	using EntityID = unsigned int;
 
-	EntityManager(States::Context context);
+	EntityManager(States::Context context, World::GameData &gameData);
 	~EntityManager() = default;
 
 	void update(sf::Time dt);
@@ -36,14 +37,23 @@ public:
 	template <typename T>
 	void registerComponent(Components::ID component);
 
+	void setSelectedEntity(Entity *entity);
+	Entity *getSelectedEntity() const;
+
+	void setLevelData(World::LevelData &levelData);
+	World::LevelData &getLevelData();
+	World::GameData &getGameData();
+
 	Entity &createEntity();
 
+	Entity *getEntity(const sf::Vector2i &mousePos) const;
 	std::vector<Entity*> getEntities(Components::ID component);
 	States::Context getContext() const;
 
 	void requestEntityRemoval(EntityID entity);
 	//void deleteEntities();
 
+	void applyChanges();
 private:
 	enum class Action
 	{
@@ -57,15 +67,17 @@ private:
 
 	void addToSystems(EntityID entity);
 	void removeEntity(EntityID entity);
-	void applyChanges();
 
 	void addComponent(Entity &entity, Components::ID component);
 	void removeComponent(Entity &entity, Components::ID component);
 	Component *getComponent(Entity &entity, Components::ID component);
 
+	World::GameData *gameData;
+	World::LevelData *levelData;
 	States::Context context;
 	EntityPool pool;
 
+	Entity *selectedEntity;
 	TextureManager *textureManager;
 
 	DrawSystem *renderer;

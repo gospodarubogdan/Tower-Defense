@@ -1,6 +1,14 @@
 #include "Game.hpp"
 #include "MapLoader.hpp"
 
+//TODO
+// life = 30
+// upgrade
+// sell
+// balanseaza nivelurile
+// ??button pentru range
+// sunete
+
 int main()
 {
 	Game game;

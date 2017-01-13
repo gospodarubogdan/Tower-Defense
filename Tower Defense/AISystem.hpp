@@ -14,6 +14,7 @@ public:
 
 private:
 	void updateDirection(DirectionComponent *direction, const sf::Vector2f &vector);
+	void moveEntity(float &x, float &y, DirectionComponent *direction, float factor);
 	bool checkpointReached(float x, float y, int index);
 
 	std::vector<sf::RectangleShape> checkpoints;

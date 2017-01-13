@@ -2,16 +2,15 @@
 #include "Entity.hpp"
 #include "ComponentsData.hpp"
 #include "EntityManager.hpp"	
-#include "Gold.hpp"
 
 #include <math.h>
 
 DamageSystem::DamageSystem()
 {
 	bitset |= Components::ID::PositionComponent;
+	bitset |= Components::ID::VelocityComponent;
 	bitset |= Components::ID::DamageComponent;
 	bitset |= Components::ID::TargetComponent;
-	//bitset |= Components::ID::HealthComponent;
 }
 
 void DamageSystem::update(sf::Time dt)
@@ -35,25 +34,6 @@ void DamageSystem::update(sf::Time dt)
 	}
 }
 
-void DamageSystem::addEntity(Entity &entity)
-{
-	if (entity.hasComponent(Components::ID::HealthComponent))
-		enemies.push_back(&entity);
-	else 
-		entities.push_back(&entity);
-}
-
-void DamageSystem::removeEntity(unsigned int id)
-{
-	System::removeEntity(id);
-
-	enemies.erase(std::remove_if(
-		enemies.begin(),
-		enemies.end(),
-		[&](const auto &e) { return e->getID() == id; }),
-		enemies.end());
-}
-
 bool DamageSystem::isCollision(Entity *projectile, Entity *target)
 {
 	auto targetRender = static_cast<RenderComponent*>(target->getComponent(Components::ID::RenderComponent));
@@ -68,7 +48,11 @@ void DamageSystem::dealDamage(sf::Time dt, Entity *projectile)
 	auto range = static_cast<SplashComponent*>(projectile->getComponent(Components::ID::SplashComponent));
 	auto position = static_cast<PositionComponent*>(projectile->getComponent(Components::ID::PositionComponent));
 
-	if (projectile->hasComponent(Components::ID::SlowComponent))
+	int maxHP = manager->getLevelData().hp;
+	int goldPerMinion = manager->getLevelData().goldPerMinion;
+
+	if (projectile->hasComponent(Components::ID::SlowComponent)
+		&& !manager->getLevelData().immuneToSlow)
 	{
 		auto enemies = manager->getEntities(Components::ID::HealthComponent);
 
@@ -80,9 +64,23 @@ void DamageSystem::dealDamage(sf::Time dt, Entity *projectile)
 			{
 				auto slow = static_cast<SlowComponent*>(projectile->getComponent(Components::ID::SlowComponent));
 				auto vel = static_cast<VelocityComponent*>(enemy->getComponent(Components::ID::VelocityComponent));
-				vel->speed = slow->speed;
+				vel->speed = manager->getLevelData().movementSpeed * slow->speed;
 				vel->duration = sf::Time::Zero;
 			}
+
+			auto hp = static_cast<HealthComponent*>(enemy->getComponent(Components::ID::HealthComponent));
+
+			hp->health -= dmg->damage;
+
+			if (hp->health <= 0)
+			{
+				hp->health = 0;
+				manager->getGameData().gold += goldPerMinion;
+				manager->requestEntityRemoval(enemy->getID());
+			}
+
+			float scale = static_cast<float>(hp->health) / static_cast<float>(maxHP);
+			hp->healthBar.setSize({ 32.f * scale, 10 });
 		}
 	}
 	else if (projectile->hasComponent(Components::ID::SplashComponent))
@@ -98,14 +96,16 @@ void DamageSystem::dealDamage(sf::Time dt, Entity *projectile)
 				auto hp = static_cast<HealthComponent*>(enemy->getComponent(Components::ID::HealthComponent));
 
 				hp->health -= dmg->damage;
-				float scale = static_cast<float>(hp->health) / 2500.f;
-				hp->healthBar.setSize({ 32.f * scale, 10 });
 
 				if (hp->health <= 0)
 				{
-					manager->getContext().gold->addGold(4);
+					hp->health = 0;
+					manager->getGameData().gold += goldPerMinion;
 					manager->requestEntityRemoval(enemy->getID());
 				}
+
+				float scale = static_cast<float>(hp->health) / static_cast<float>(maxHP);
+				hp->healthBar.setSize({ 32.f * scale, 10 });
 			}
 		}
 	}
@@ -113,14 +113,17 @@ void DamageSystem::dealDamage(sf::Time dt, Entity *projectile)
 	auto target = static_cast<TargetComponent*>(projectile->getComponent(Components::ID::TargetComponent));
 	auto hp = static_cast<HealthComponent*>(target->target->getComponent(Components::ID::HealthComponent));
 	hp->health -= dmg->damage;
-	float scale = static_cast<float>(hp->health) / 2500.f;
-	hp->healthBar.setSize({ 32.f * scale, 10 });
 
 	if (hp->health <= 0)
 	{
-		manager->getContext().gold->addGold(4);
+		hp->health = 0;
+		manager->getGameData().gold += goldPerMinion;
 		manager->requestEntityRemoval(target->target->getID());
 	}
+
+	float scale = static_cast<float>(hp->health) / static_cast<float>(maxHP);
+	hp->healthBar.setSize({ 32.f * scale, 10 });
+
 }
 
 int DamageSystem::getDistance(PositionComponent *posOne, PositionComponent *posTwo)

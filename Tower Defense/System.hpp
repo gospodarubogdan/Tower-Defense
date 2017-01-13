@@ -17,8 +17,8 @@ public:
 
 	virtual void update(sf::Time dt) = 0;
 	
-	virtual void addEntity(Entity &entity);
-	virtual void removeEntity(unsigned int id);
+	void addEntity(Entity &entity);
+	void removeEntity(unsigned int id);
 	
 	void setManager(EntityManager *manager);
 	void setTextureManager(TextureManager *textureManager);

@@ -4,29 +4,58 @@ namespace sf
 {
 	class RenderWindow;
 	class Font;
+	class Sprite;
 }
 class TextureManager;
-class Gold;
+class SoundManager;
+
+namespace World
+{
+	struct LevelData
+	{
+		int numberOfMinions;
+		int goldPerMinion;
+		int hp;
+		bool immuneToSlow;
+		int movementSpeed;
+		bool levelOver;
+	};
+
+	struct GameData
+	{
+		int lives;
+		int gold;
+	};
+
+	struct UpgradeData
+	{
+		int cost[3];
+		int damage[3];
+		float attackSpeed[3];
+	};
+}
 
 namespace States
 {
-	class Context
+	struct Context
 	{
-	public:
 		explicit Context(sf::RenderWindow &window
 			, sf::Font &font
 			, TextureManager &textureManager
-			, Gold &gold)
+			, SoundManager &soundManager
+			, sf::Sprite &cursor)
 
 			: window(&window)
 			, font(&font)
 			, textureManager(&textureManager)
-			, gold(&gold)
+			, soundManager(&soundManager)
+			, cursor(&cursor)
 		{};
 
 		sf::RenderWindow *window;
 		sf::Font *font;
 		TextureManager *textureManager;
-		Gold *gold;
+		SoundManager *soundManager;
+		sf::Sprite *cursor;
 	};
 }

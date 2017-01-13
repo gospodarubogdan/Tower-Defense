@@ -1,6 +1,7 @@
 #include "AISystem.hpp"
 #include "Entity.hpp"
 #include "ComponentsData.hpp"
+#include "EntityManager.hpp"
 
 #include <fstream>
 #include <math.h>
@@ -30,9 +31,15 @@ AISystem::AISystem()
 	bitset |= Components::ID::DirectionComponent;
 	bitset |= Components::ID::HealthComponent;
 }
-#include <iostream>
+
 void AISystem::update(sf::Time dt)
 {
+	if (entities.empty())
+	{
+		manager->getLevelData().levelOver = true;
+		return;
+	}
+
 	for (auto &entity : entities)
 	{
 		auto position = static_cast<PositionComponent*>(entity->getComponent(Components::ID::PositionComponent));
@@ -45,13 +52,17 @@ void AISystem::update(sf::Time dt)
 			ai->index++;
 
 		if (ai->index == CHECKPOINTS)
-			; // life--;
+		{
+			manager->getGameData().lives--;
+			manager->requestEntityRemoval(entity->getID());
+			continue;
+		}
 
 		velocity->duration += dt;
 		if (velocity->duration.asSeconds() >= 2.f)
 		{
 			velocity->duration = sf::Time::Zero;
-			velocity->speed = 70.f;
+			velocity->speed = manager->getLevelData().movementSpeed;
 		}
 
 		int index = ai->index;
@@ -60,15 +71,11 @@ void AISystem::update(sf::Time dt)
 
 		float magnitude = sqrt((direction.x * direction.x) + (direction.y * direction.y));
 		sf::Vector2f unitVector(direction.x / magnitude, direction.y / magnitude);
-
-		sf::Vector2f factor(unitVector * velocity->speed * dt.asSeconds());
-
-		position->x += factor.x;
-		position->y += factor.y;
+	
+		updateDirection(dir, unitVector);
+		moveEntity(position->x, position->y, dir, velocity->speed * dt.asSeconds());
 
 		hp->healthBar.setPosition(position->x - 16, position->y - 26);
-
-		updateDirection(dir, factor);
 	}
 }
 
@@ -88,6 +95,25 @@ void AISystem::updateDirection(DirectionComponent *direction, const sf::Vector2f
 		else direction->dir = Direction::Left;
 	}
 	if (temp != direction->dir) direction->changed = true;
+}
+
+void AISystem::moveEntity(float &x, float &y, DirectionComponent *direction, float factor)
+{
+	switch (direction->dir)
+	{
+	case Direction::Up:
+		y -= factor;
+		break;
+	case Direction::Down:
+		y += factor;
+		break;
+	case Direction::Left:
+		x -= factor;
+		break;
+	case Direction::Right:
+		x += factor;
+		break;
+	}
 }
 
 bool AISystem::checkpointReached(float x, float y, int index)

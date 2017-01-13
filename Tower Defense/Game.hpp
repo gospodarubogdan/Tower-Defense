@@ -4,7 +4,7 @@
 #include "GameContext.hpp"
 #include "Camera.hpp"
 #include "TextureManager.hpp"
-#include "Gold.hpp"
+#include "SoundManager.hpp"
 
 class Game : sf::NonCopyable
 {
@@ -22,7 +22,9 @@ private:
 
 	sf::Font       font;
 	TextureManager textureManager;
-	Gold gold;
+	SoundManager soundManager;
+
+	sf::Sprite cursor;
 
 	sf::RenderWindow window;
 	States::Context  context;

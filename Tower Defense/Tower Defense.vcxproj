@@ -178,8 +178,8 @@
     <ClCompile Include="MapLoader.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="MoveSystem.cpp" />
-    <ClCompile Include="Gold.cpp" />
     <ClCompile Include="ShootSystem.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="System.cpp" />
@@ -213,8 +213,8 @@
     <ClInclude Include="ComponentsData.hpp" />
     <ClInclude Include="MenuState.hpp" />
     <ClInclude Include="MoveSystem.hpp" />
-    <ClInclude Include="Gold.hpp" />
     <ClInclude Include="ShootSystem.hpp" />
+    <ClInclude Include="SoundManager.hpp" />
     <ClInclude Include="State.hpp" />
     <ClInclude Include="StateManager.hpp" />
     <ClInclude Include="System.hpp" />

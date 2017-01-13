@@ -4,13 +4,14 @@
 
 Game::Game()
 	: window({ 800, 600 }, "TD", sf::Style::Titlebar | sf::Style::Close, sf::ContextSettings{0,0, 8, 1, 1, 0, false})
-	, context(window, font, textureManager, gold)
+	, context(window, font, textureManager, soundManager, cursor)
 	, manager(context)
 	, camera(context)
 {
 	//sf::Style::Titlebar | sf::Style::Close
 	//window.create({ 1440, 900 }, "TD", sf::Style::Titlebar | sf::Style::Close);
 	window.setVerticalSyncEnabled(true);
+	window.setMouseCursorVisible(false);
 	//window.setFramerateLimit(60);
 
 	font.loadFromFile("data/font.ttf");
@@ -18,6 +19,11 @@ Game::Game()
 	textureManager.loadFromFile("buttonGreen", "data/button_green.png");
 	textureManager.loadFromFile("buttonRed", "data/button_red.png");
 	textureManager.loadFromFile("panel", "data/panel.png");
+	textureManager.loadFromFile("cursorNormal", "data/cursor/normal_cursor.png");
+	textureManager.loadFromFile("cursorUpgrade", "data/cursor/upgrade_cursor.png");
+	textureManager.loadFromFile("cursorSell", "data/cursor/sell_cursor.png");
+
+	cursor.setTexture(textureManager.getTexture("cursorNormal"));
 
 	registerStates();
 	manager.pushState(States::ID::Menu);
@@ -66,14 +72,18 @@ void Game::processEvents()
 void Game::update(sf::Time frameTime)
 {
 	manager.update(frameTime);
+
+	//Cursor position
+	cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
+
 }
 
 void Game::draw()
 {
 	window.clear();
 
-	//camera.draw();
 	manager.draw();
+	window.draw(cursor);
 
 	window.display();
 }

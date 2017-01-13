@@ -1,5 +1,6 @@
 #include "EntityManager.hpp"
 #include "Entity.hpp"
+#include "GameState.hpp"
 
 #include "DrawSystem.hpp"
 #include "ShootSystem.hpp"
@@ -8,8 +9,9 @@
 #include "DamageSystem.hpp"
 #include "AnimationSystem.hpp"
 
-EntityManager::EntityManager(States::Context context)
+EntityManager::EntityManager(States::Context context, World::GameData &gameData)
 	: context(context)
+	, gameData(&gameData)
 	, pool(300)
 	, entities()
 	, components()
@@ -31,6 +33,31 @@ void EntityManager::draw(sf::RenderWindow &window)
 	renderer->draw(window);
 }
 
+void EntityManager::setSelectedEntity(Entity *entity)
+{
+	selectedEntity = entity;
+}
+
+Entity *EntityManager::getSelectedEntity() const
+{
+	return selectedEntity;
+}
+
+void EntityManager::setLevelData(World::LevelData &levelData)
+{
+	this->levelData = &levelData;
+}
+
+World::LevelData &EntityManager::getLevelData()
+{
+	return *levelData;
+}
+
+World::GameData &EntityManager::getGameData()
+{
+	return *gameData;
+}
+
 Entity &EntityManager::createEntity()
 {
 	int id = pool.createID();
@@ -40,6 +67,19 @@ Entity &EntityManager::createEntity()
 	entities.insert(std::make_pair(id, std::move(temp)));
 
 	return *entities[id].get();
+}
+
+Entity *EntityManager::getEntity(const sf::Vector2i &mousePos) const
+{
+	for (const auto &entity : entities)
+		if (entity.second->hasComponent(Components::ID::SelectableComponent))
+		{
+			auto bounding = static_cast<SelectableComponent*>(entity.second->getComponent(Components::ID::SelectableComponent));
+			if (bounding->box.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos)))
+				return entity.second.get();
+		}
+
+	return nullptr;
 }
 
 std::vector<Entity*> EntityManager::getEntities(Components::ID component)
@@ -73,11 +113,13 @@ void EntityManager::registerComponents()
 	registerComponent<TargetComponent>(Components::ID::TargetComponent);
 	registerComponent<AIComponent>(Components::ID::AIComponent);
 	registerComponent<DamageComponent>(Components::ID::DamageComponent);
-	registerComponent<BoundComponent>(Components::ID::BoundComponent);
+	registerComponent<SelectableComponent>(Components::ID::SelectableComponent);
 	registerComponent<DirectionComponent>(Components::ID::DirectionComponent);
 	registerComponent<AnimationComponent>(Components::ID::AnimationComponent);
 	registerComponent<SplashComponent>(Components::ID::SplashComponent);
 	registerComponent<SlowComponent>(Components::ID::SlowComponent);
+	registerComponent<GoldComponent>(Components::ID::GoldComponent);
+	registerComponent<UpgradeComponent>(Components::ID::UpgradeComponent);
 }
 
 void EntityManager::initializeSystems()

@@ -1,11 +1,11 @@
 #include "HUD.hpp"
-#include "Gold.hpp"
 #include "TextureManager.hpp"
 
 using namespace gui;
 
-HUD::HUD(States::Context context)
+HUD::HUD(States::Context context, World::GameData &gameData)
 	: context(context)
+	, gameData(&gameData)
 {
 	
 }
@@ -13,17 +13,21 @@ HUD::HUD(States::Context context)
 void HUD::init()
 {
 	singleTurret.setTexture(context.textureManager->getTexture("singleTarget"));
-	singleTurret.setPosition(120.f, 530.f);
+	singleTurret.setPosition(268.f, 500.f);
 
 	splashTurret.setTexture(context.textureManager->getTexture("splash"));
-	splashTurret.setPosition(200.f, 530.f);
+	splashTurret.setPosition(368.f, 500.f);
 
 	frostTurret.setTexture(context.textureManager->getTexture("frost"));
-	frostTurret.setPosition(280.f, 530.f);
+	frostTurret.setPosition(468.f, 500.f);
 
 	totalGold.setFont(*context.font);
-	totalGold.setString("Gold: " + std::to_string(context.gold->getGold()));
+	totalGold.setString("Gold: " + std::to_string(gameData->gold));
 	totalGold.setPosition(0.f, 500.f);
+	
+	totalLives.setFont(*context.font);
+	totalLives.setString("Lives: " + std::to_string(gameData->lives));
+	totalLives.setPosition(0.f, 560.f);
 
 	background.setFillColor(sf::Color(169, 169, 169));
 	background.setPosition(0.f, 480.f);
@@ -47,7 +51,8 @@ void HUD::handleEvent(const sf::Event &event)
 
 void HUD::update(sf::Time dt)
 {
-	totalGold.setString("Gold: " + std::to_string(context.gold->getGold()));
+	totalGold.setString("Gold: " + std::to_string(gameData->gold));
+	totalLives.setString("Lives: " + std::to_string(gameData->lives));
 }
 
 void gui::HUD::resetTowerType()
@@ -71,4 +76,5 @@ void HUD::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	target.draw(splashTurret);
 	target.draw(frostTurret);
 	target.draw(totalGold);
+	target.draw(totalLives);
 }

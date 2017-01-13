@@ -9,10 +9,7 @@
 #include "EntityManager.hpp"
 #include "Camera.hpp"
 #include "TowerTypes.hpp"
-
-#include "ShootSystem.hpp"
-#include "MoveSystem.hpp"
-#include "DrawSystem.hpp"
+#include "Gui.hpp"
 
 class GameState : public State
 {
@@ -28,18 +25,25 @@ private:
 	void placeTower(Tower::Type type);
 	bool validPosition();
 
-	void readLevelData();
+	void freeTiles(const sf::Vector2f &position);
+	void createLevelEntities();
+	void readGameData();
+	void upgradeEntity(Entity *entity);
 
-	struct LevelData
+	enum class Action
 	{
-		int numberOfMinions;
-		int goldPerMinion;
-		int hp;
-		bool immuneToSlow;
-		int movementSpeed;
+		None,
+		Upgrade,
+		Sell
 	};
+	Action action;
 
-	std::vector<LevelData> levelsData;
+	std::vector<World::UpgradeData> upgrades;
+	World::GameData gameData;
+	std::vector<World::LevelData> levelsData;
+	int currentLevel;
+
+	sf::Time waitingTime;
 
 	bool selected;
 	Tower::Type tower;
@@ -48,10 +52,8 @@ private:
 
 	Camera camera;
 
-	ShootSystem shootsystem;
-	MoveSystem ms;
-	DrawSystem ds;
-
+	gui::Gui container;
+	
 	EntityManager entityManager;
 	Grid grid;
 	gui::HUD hud;

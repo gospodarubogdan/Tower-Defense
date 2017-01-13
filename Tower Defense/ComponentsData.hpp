@@ -3,12 +3,12 @@
 #include <SFML/Graphics.hpp>	
 #include "Component.hpp"
 
-enum class Direction : int
+enum class Direction
 {
-	Up = 0,
-	Down = 1,
-	Left = 2,
-	Right = 3
+	Up,
+	Down,
+	Left,
+	Right
 };
 
 class PositionComponent : public Component
@@ -53,7 +53,6 @@ class HealthComponent : public Component
 {
 public:
 	int health;
-	//sf::Sprite healthBar;
 	sf::RectangleShape healthBar;
 };
 
@@ -69,7 +68,7 @@ public:
 	int damage;
 };
 
-class BoundComponent : public Component
+class SelectableComponent : public Component
 {
 public:
 	sf::RectangleShape box;
@@ -99,4 +98,16 @@ class SlowComponent : public Component
 {
 public:
 	float speed;
+};
+
+class GoldComponent : public Component
+{
+public:
+	int gold;
+};
+
+class UpgradeComponent : public Component
+{
+public:
+	int upgrade;
 };

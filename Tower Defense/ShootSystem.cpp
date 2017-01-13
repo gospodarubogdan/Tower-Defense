@@ -73,7 +73,8 @@ void ShootSystem::createProjectile(Entity *turret, int x, int y, Entity *target)
 	vel->speed = 250.f;
 
 	auto dmg = static_cast<DamageComponent*>(entity.getComponent(Components::ID::DamageComponent));
-	dmg->damage = 40;
+	auto turretDmg = static_cast<DamageComponent*>(turret->getComponent(Components::ID::DamageComponent));
+	dmg->damage = turretDmg->damage;
 
 	auto render = static_cast<RenderComponent*>(entity.getComponent(Components::ID::RenderComponent));
 	render->sprite.setTexture(manager->getContext().textureManager->getTexture("bullet"));
@@ -87,8 +88,6 @@ void ShootSystem::createProjectile(Entity *turret, int x, int y, Entity *target)
 
 		auto splashComp = static_cast<SplashComponent*>(entity.getComponent(Components::ID::SplashComponent));
 		splashComp->range = 150.f;
-
-		dmg->damage = 20;
 	}
 
 	if (turret->hasComponent(Components::ID::SlowComponent))
@@ -96,9 +95,7 @@ void ShootSystem::createProjectile(Entity *turret, int x, int y, Entity *target)
 		entity.addComponent(Components::ID::SlowComponent);
 
 		auto slow = static_cast<SlowComponent*>(entity.getComponent(Components::ID::SlowComponent));
-		slow->speed = 35.f;
-		std::cout << "slow comp";
-		dmg->damage = 10;
+		slow->speed = 0.5f;
 	}
 }
 

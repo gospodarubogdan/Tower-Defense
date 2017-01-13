@@ -1,0 +1,9 @@
+50, 150, 250
+50 gold
+30 vieti
+
+frost: 10, 20, 30 (150, 200, 250)
+splash: 30, 40, 50 (50, 100, 150) (1, 1.25, 1.5)
+single: 50, 70, 90 (50, 100, 150) (2, 2.5, 3)
+
+numar minioni, gold, hp, imun la frost, speed
