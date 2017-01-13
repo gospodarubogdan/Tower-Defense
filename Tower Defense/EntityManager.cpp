@@ -18,6 +18,9 @@ EntityManager::EntityManager(States::Context context, World::GameData &gameData)
 {
 	registerComponents();
 	initializeSystems();
+
+	actionQueue.reserve(100);
+	entities.reserve(150);
 }
 
 void EntityManager::update(sf::Time dt)

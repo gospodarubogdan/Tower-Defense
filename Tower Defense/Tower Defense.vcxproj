@@ -120,7 +120,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -168,7 +168,9 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="EntityPool.cpp" />
+    <ClCompile Include="FPS.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameOverState.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Gui.cpp" />
@@ -178,6 +180,8 @@
     <ClCompile Include="MapLoader.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="MoveSystem.cpp" />
+    <ClCompile Include="PauseState.cpp" />
+    <ClCompile Include="Score.cpp" />
     <ClCompile Include="ShootSystem.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="State.cpp" />
@@ -201,8 +205,10 @@
     <ClInclude Include="EntityManager.hpp" />
     <ClInclude Include="EntityPool.hpp" />
     <ClInclude Include="EntityTypes.hpp" />
+    <ClInclude Include="FPS.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameContext.hpp" />
+    <ClInclude Include="GameOverState.hpp" />
     <ClInclude Include="GameState.hpp" />
     <ClInclude Include="GameStates.hpp" />
     <ClInclude Include="Grid.hpp" />
@@ -213,6 +219,8 @@
     <ClInclude Include="ComponentsData.hpp" />
     <ClInclude Include="MenuState.hpp" />
     <ClInclude Include="MoveSystem.hpp" />
+    <ClInclude Include="PauseState.hpp" />
+    <ClInclude Include="Score.hpp" />
     <ClInclude Include="ShootSystem.hpp" />
     <ClInclude Include="SoundManager.hpp" />
     <ClInclude Include="State.hpp" />

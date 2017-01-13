@@ -19,7 +19,7 @@ AISystem::AISystem()
 		sf::RectangleShape shape;
 		shape.setSize({ 10, 10 });
 		shape.setOrigin(5, 5);
-		shape.setPosition(x, y);
+		shape.setPosition(static_cast<float>(x), static_cast<float>(y));
 
 		checkpoints.push_back(shape);
 	}

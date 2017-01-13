@@ -2,8 +2,9 @@
 
 using namespace gui;
 
-Button::Button()
-	: callback()
+Button::Button(SoundManager &soundManager)
+	: soundManager(soundManager)
+	, callback()
 	, toggle(false)
 	, selected(false)
 {
@@ -80,6 +81,8 @@ void Button::select()
 {
 	changeTexture(Type::Selected);
 	selected = true;
+
+	soundManager.play("mouseHover");
 }
 
 void Button::deselect()
@@ -96,6 +99,7 @@ void Button::activate()
 		callback();
 
 	deactivate();
+	soundManager.play("mouseClick");
 }
 
 void Button::deactivate()

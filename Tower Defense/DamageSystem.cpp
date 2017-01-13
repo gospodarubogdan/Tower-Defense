@@ -128,7 +128,7 @@ void DamageSystem::dealDamage(sf::Time dt, Entity *projectile)
 
 int DamageSystem::getDistance(PositionComponent *posOne, PositionComponent *posTwo)
 {
-	int x = posOne->x - posTwo->x;
-	int y = posOne->y - posTwo->y;
-	return abs(sqrt(x * x + y * y));
+	float x = std::floor(posOne->x - posTwo->x);
+	float y = std::floor(posOne->y - posTwo->y);
+	return static_cast<int>(abs(sqrt(x * x + y * y)));
 }

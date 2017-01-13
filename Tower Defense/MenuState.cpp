@@ -21,7 +21,7 @@ MenuState::MenuState(StateManager &stack, States::Context context)
 	panelSprite.setPosition({ static_cast<float>(window.getSize().x / 2 - panelTexture.getSize().x / 2),
 		static_cast<float>(window.getSize().y / 2 - panelTexture.getSize().y / 2) });
 
-	auto play = std::make_shared<gui::Button>();// (*getContext().soundPlayer);
+	auto play = std::make_shared<gui::Button>(*getContext().soundManager);// (*getContext().soundPlayer);
 	play->setTexture(getContext().textureManager->getTexture("buttonGreen"));
 	play->setPosition({ static_cast<float>(window.getSize().x / 2 - 190 / 2),
 		static_cast<float>(window.getSize().y / 2 - 49 / 4 * 3) });
@@ -33,7 +33,7 @@ MenuState::MenuState(StateManager &stack, States::Context context)
 		pushState(States::ID::Game);
 	});
 
-	auto quit = std::make_shared<gui::Button>();// (*getContext().soundPlayer);
+	auto quit = std::make_shared<gui::Button>(*getContext().soundManager);// (*getContext().soundPlayer);
 	quit->setTexture(getContext().textureManager->getTexture("buttonRed"));
 	quit->setPosition({ static_cast<float>(window.getSize().x / 2 - 190 / 2),
 		static_cast<float>(window.getSize().y / 2 + 49 / 4 * 3) });

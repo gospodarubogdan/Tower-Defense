@@ -20,6 +20,10 @@ void DrawSystem::draw(sf::RenderWindow &window)
 		auto render   = static_cast<RenderComponent*>(entity->getComponent(Components::ID::RenderComponent));
 
 		render->sprite.setPosition(position->x, position->y);
+		if (!(position->x >= 0 && position->y >= 0))
+		{
+			continue;
+		}
 		
 		window.draw(render->sprite);
 		if (entity->hasComponent(Components::ID::RangeComponent))

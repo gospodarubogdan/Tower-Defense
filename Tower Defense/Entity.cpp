@@ -14,7 +14,7 @@ const unsigned int Entity::getID() const
 
 bool Entity::hasComponent(Components::ID component)
 {
-	return componentBits & component;
+	return (componentBits & static_cast<int>(component)) == static_cast<int>(component);
 }
 
 void Entity::addComponent(Components::ID component)
@@ -36,18 +36,15 @@ void Entity::removeComponent(Components::ID component)
 
 void Entity::clearComponents()
 {
-	componentBits = 0;
+	componentBits = 1 << 0;
 	components.clear();
 }
 
 Component *Entity::getComponent(Components::ID component)
 {
-	auto found = components.find(component);
-	if (found == components.end())
-		return nullptr;
-
-	return components.at(component).get();
-	//return manager->getComponent(*this, component);
+	if(hasComponent(component))
+		return components.at(component).get();
+	return nullptr;
 }
 
 int Entity::getBits() const

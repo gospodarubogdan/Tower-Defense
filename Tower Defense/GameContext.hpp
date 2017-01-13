@@ -8,6 +8,7 @@ namespace sf
 }
 class TextureManager;
 class SoundManager;
+class Score;
 
 namespace World
 {
@@ -17,7 +18,7 @@ namespace World
 		int goldPerMinion;
 		int hp;
 		bool immuneToSlow;
-		int movementSpeed;
+		float movementSpeed;
 		bool levelOver;
 	};
 
@@ -25,6 +26,7 @@ namespace World
 	{
 		int lives;
 		int gold;
+		int currentLevel;
 	};
 
 	struct UpgradeData
@@ -43,13 +45,15 @@ namespace States
 			, sf::Font &font
 			, TextureManager &textureManager
 			, SoundManager &soundManager
-			, sf::Sprite &cursor)
+			, sf::Sprite &cursor
+			, Score &score)
 
 			: window(&window)
 			, font(&font)
 			, textureManager(&textureManager)
 			, soundManager(&soundManager)
 			, cursor(&cursor)
+			, score(&score)
 		{};
 
 		sf::RenderWindow *window;
@@ -57,5 +61,6 @@ namespace States
 		TextureManager *textureManager;
 		SoundManager *soundManager;
 		sf::Sprite *cursor;
+		Score *score;
 	};
 }

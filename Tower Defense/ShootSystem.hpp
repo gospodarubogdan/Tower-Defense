@@ -14,7 +14,7 @@ public:
 
 private:
 	void selectTarget(const sf::CircleShape &range, Entity *&target);
-	void createProjectile(Entity *turret, int x, int y, Entity *target);
+	void createProjectile(Entity *turret, float x, float y, Entity *target);
 	bool isTargetInRange(const sf::CircleShape &range, Entity *target);
 };
 

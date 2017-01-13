@@ -6,6 +6,7 @@
 #include "DrawSystem.hpp"
 
 #include "Button.hpp"
+#include "Score.hpp"
 
 #include <fstream>
 
@@ -18,7 +19,6 @@ GameState::GameState(StateManager &stack, States::Context context)
 	, map(TILE_SIZE, TILE_WORLD_SIZE)
 	, grid(*context.window)
 	, selected(false)
-	, currentLevel(0)
 {
 	context.textureManager->loadFromFile("mapSheet", "data/mapnospace.png");
 	context.textureManager->loadFromFile("mob", "data/animtest.png");
@@ -27,7 +27,6 @@ GameState::GameState(StateManager &stack, States::Context context)
 	context.textureManager->loadFromFile("frost", "data/frost.png");
 	context.textureManager->loadFromFile("bullet", "data/bullet.png");
 	context.textureManager->loadFromFile("healthBar", "data/healthbar.png");
-
 
 	context.soundManager->loadFromFile("upgrade", "data/sfx/upgrade.wav");
 	context.soundManager->loadFromFile("sell", "data/sfx/sell.wav");
@@ -46,36 +45,14 @@ GameState::GameState(StateManager &stack, States::Context context)
 	range.setOutlineThickness(2.f);
 	range.setOutlineColor(sf::Color::Red);
 
-	sf::RenderWindow &window = *getContext().window;
-
-	auto upgrade = std::make_shared<gui::Button>();// (*getContext().soundPlayer);
-	upgrade->setTexture(getContext().textureManager->getTexture("buttonGreen"));
-	upgrade->setPosition({ 630.f, 490.f });
-	upgrade->setFont(*getContext().font);
-	upgrade->setText("Upgrade");
-	upgrade->setCallback([this]()
-	{
-		getContext().cursor->setTexture(getContext().textureManager->getTexture("cursorUpgrade"));
-		action = Action::Upgrade;
-	});
-
-	auto sell = std::make_shared<gui::Button>();// (*getContext().soundPlayer);
-	sell->setTexture(getContext().textureManager->getTexture("buttonGreen"));
-	sell->setPosition({ 630.f, 550.f });
-	sell->setFont(*getContext().font);
-	sell->setText("Sell");
-	sell->setCallback([this]()
-	{
-		getContext().cursor->setTexture(getContext().textureManager->getTexture("cursorSell"));
-		action = Action::Sell;
-	});
-	container.addWidget(upgrade);
-	container.addWidget(sell);
-
-	action = Action::None;
+	countdown.setCharacterSize(30);
+	countdown.setFillColor(sf::Color::Red);
+	countdown.setString("5");
+	countdown.setPosition({390, 30});
+	countdown.setFont(*context.font);
 
 	gameData.lives = 30;
-	gameData.gold = 500;
+	gameData.gold = 50;
 
 	hud.init();
 	readGameData();
@@ -98,7 +75,7 @@ bool GameState::handleEvent(const sf::Event &event)
 			selected = false;
 			hud.resetTowerType();
 		}
-		else if (action != Action::None)
+		else if (hud.getAction() != gui::HUD::Action::None)
 		{
 			sf::Vector2f worldPos = getContext().window->mapPixelToCoords(mousePos, camera.getView());
 			Entity *entity = entityManager.getEntity(static_cast<sf::Vector2i>(worldPos));
@@ -107,12 +84,12 @@ bool GameState::handleEvent(const sf::Event &event)
 				getContext().cursor->setTexture(getContext().textureManager->getTexture("cursorNormal"));
 				auto cost = static_cast<GoldComponent*>(entity->getComponent(Components::ID::GoldComponent));
 				
-				if (action == Action::Upgrade)
+				if (hud.getAction() == gui::HUD::Action::Upgrade)
 				{
 					if (gameData.gold >= cost->gold)
 						upgradeEntity(entity);
 					else {};
-					action = Action::None;
+					hud.setAction(gui::HUD::Action::None);
 				}
 				else
 				{
@@ -125,7 +102,7 @@ bool GameState::handleEvent(const sf::Event &event)
 
 					entityManager.requestEntityRemoval(entity->getID());
 
-					action = Action::None;
+					hud.setAction(gui::HUD::Action::None);
 				}
 			}
 		}
@@ -134,7 +111,6 @@ bool GameState::handleEvent(const sf::Event &event)
 		&& event.key.code == sf::Mouse::Right)
 	{
 		getContext().cursor->setTexture(getContext().textureManager->getTexture("cursorNormal"));
-		action = Action::None;
 		selected = false;
 		hud.resetTowerType();
 	}
@@ -153,17 +129,12 @@ bool GameState::update(sf::Time dt)
 	hud.update(dt);
 	container.updateWidgets(dt);
 
-	if (gameData.lives <= 0)
-	{
-		// gameover
-	}
-
 	sf::Vector2i pixelPos = sf::Mouse::getPosition(*getContext().window);
 	if (selected)
 	{
 		sf::Vector2f worldPos = getContext().window->mapPixelToCoords(pixelPos, camera.getView());
-	
-		placement.setPosition(std::floor(worldPos.x / TILE_SIZE) * TILE_SIZE, 
+
+		placement.setPosition(std::floor(worldPos.x / TILE_SIZE) * TILE_SIZE,
 			std::floor(worldPos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE);
 
 		range.setPosition(placement.getPosition().x + TILE_SIZE, placement.getPosition().y - TILE_SIZE);
@@ -175,17 +146,34 @@ bool GameState::update(sf::Time dt)
 			selected = true;
 	}
 
-	waitingTime += dt;
-	if (waitingTime.asSeconds() >= 5.f)
+	if (gameData.currentLevel == 10)
 	{
-		if (!levelsData[currentLevel].levelOver)
+		getContext().score->computeScore(gameData.gold, gameData.lives, gameData.currentLevel);
+
+		popState();
+		pushState(States::ID::GameOver);
+	}
+
+	waitingTime += dt;
+	countdown.setString(std::to_string(static_cast<int>(6.f - waitingTime.asSeconds())));
+	if (waitingTime.asSeconds() >= 6.f)
+	{
+		if (!levelsData[gameData.currentLevel].levelOver)
 		{
 			entityManager.update(dt);
 		}
 		else
 		{
+			if (gameData.lives <= 0)
+			{
+				getContext().score->computeScore(gameData.gold, gameData.lives, gameData.currentLevel);
+
+				popState();
+				pushState(States::ID::GameOver);
+			}
+
 			waitingTime = sf::Time::Zero;
-			currentLevel++;
+			gameData.currentLevel++;
 			createLevelEntities();
 		}
 	}
@@ -205,6 +193,10 @@ void GameState::draw()
 		getContext().window->draw(placement);
 		getContext().window->draw(range);
 	}
+
+	getContext().window->setView(getContext().window->getDefaultView());
+	if(waitingTime.asSeconds() <= 6.f) 
+		getContext().window->draw(countdown);
 
 	getContext().window->draw(hud);
 	getContext().window->draw(container);
@@ -231,8 +223,8 @@ void GameState::placeTower(Tower::Type type)
 		break;
 	}
 
-	int x = (placement.getPosition().x) / TILE_SIZE;
-	int y = (placement.getPosition().y - placement.getSize().y / 2) / TILE_SIZE;
+	int x = static_cast<int>(placement.getPosition().x / TILE_SIZE);
+	int y = static_cast<int>((placement.getPosition().y - placement.getSize().y / 2) / TILE_SIZE);
 	const int dx[] = { 1, 1, 0, 0 };
 	const int dy[] = { -1, 0, -1, 0 };
 
@@ -312,8 +304,8 @@ void GameState::placeTower(Tower::Type type)
 
 bool GameState::validPosition()
 {
-	int x = (placement.getPosition().x) / TILE_SIZE;
-	int y = (placement.getPosition().y - placement.getSize().y / 2) / TILE_SIZE;
+	int x = static_cast<int>(placement.getPosition().x / TILE_SIZE);
+	int y = static_cast<int>((placement.getPosition().y - placement.getSize().y / 2) / TILE_SIZE);
 	const int dx[] = { 1, 1, 0, 0 };
 	const int dy[] = { -1, 0, -1, 0 };
 
@@ -334,8 +326,8 @@ bool GameState::validPosition()
 
 void GameState::freeTiles(const sf::Vector2f &position)
 {
-	int x = position.x / TILE_SIZE;
-	int y = (position.y + placement.getSize().y / 2) / TILE_SIZE;
+	int x = static_cast<int>(position.x / TILE_SIZE);
+	int y = static_cast<int>((position.y + placement.getSize().y / 2) / TILE_SIZE);
 	const int dx[] = { 1, 1, 0, 0 };
 	const int dy[] = { -1, 0, -1, 0 };
 
@@ -351,7 +343,7 @@ void GameState::freeTiles(const sf::Vector2f &position)
 
 void GameState::createLevelEntities()
 {
-	for (int i = 0; i < levelsData[currentLevel].numberOfMinions; i++)
+	for (int i = 0; i < levelsData[gameData.currentLevel].numberOfMinions; i++)
 	{
 		auto &entity = entityManager.createEntity();
 		entity.addComponent(Components::ID::PositionComponent);
@@ -363,11 +355,11 @@ void GameState::createLevelEntities()
 		entity.addComponent(Components::ID::AnimationComponent);
 
 		auto pos = static_cast<PositionComponent*>(entity.getComponent(Components::ID::PositionComponent));
-		pos->x = 222;
-		pos->y = (i+1) * -100;
+		pos->x = 225.f;
+		pos->y = static_cast<float>((i + 1) * -100);
 
 		auto vel = static_cast<VelocityComponent*>(entity.getComponent(Components::ID::VelocityComponent));
-		vel->speed = levelsData[currentLevel].movementSpeed;
+		vel->speed = levelsData[gameData.currentLevel].movementSpeed;
 
 		auto render = static_cast<RenderComponent*>(entity.getComponent(Components::ID::RenderComponent));
 		render->sprite.setTexture(getContext().textureManager->getTexture("mob"));
@@ -375,14 +367,14 @@ void GameState::createLevelEntities()
 		render->sprite.setOrigin(sf::Vector2f(32.f, 32.f) / 2.f);
 
 		auto hp = static_cast<HealthComponent*>(entity.getComponent(Components::ID::HealthComponent));
-		hp->health = levelsData[currentLevel].hp;
+		hp->health = levelsData[gameData.currentLevel].hp;
 		//hp->healthBar.setTexture(getContext().textureManager->getTexture("healthBar"));
 		hp->healthBar.setFillColor(sf::Color::Green);
 		hp->healthBar.setSize({ 32, 10 });
 		hp->healthBar.setPosition(pos->x - 16, pos->y - 26);
 	}
 
-	entityManager.setLevelData(levelsData[currentLevel]);
+	entityManager.setLevelData(levelsData[gameData.currentLevel]);
 }
 
 void GameState::readGameData()

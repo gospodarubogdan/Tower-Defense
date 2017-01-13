@@ -7,7 +7,7 @@ Camera::Camera(States::Context context)
 	, dragging(false)
 {
 	windowSize = context.window->getSize();
-	view.setSize(windowSize.x, windowSize.y); //480
+	view.setSize(static_cast<float>(windowSize.x), static_cast<float>(windowSize.y)); //480
 	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
 	//view.setViewport({ 0.f, 0.f, 1.f, 1.f });
 
@@ -57,7 +57,8 @@ void Camera::update(sf::Time dt)
 
 		int temp = initialMousePos.x - mousePos.x;
 
-		view.move(initialMousePos.x - mousePos.x, initialMousePos.y - mousePos.y);
+		view.move(static_cast<float>(initialMousePos.x - mousePos.x), 
+			static_cast<float>(initialMousePos.y - mousePos.y));
 		/*std::cout << temp;
 		if (temp % 2) temp += temp % 2;
 		std::cout << ' ' << temp << std::endl;*/

@@ -56,7 +56,7 @@ void ShootSystem::selectTarget(const sf::CircleShape &range, Entity *&target)
 	}
 }
 
-void ShootSystem::createProjectile(Entity *turret, int x, int y, Entity *target)
+void ShootSystem::createProjectile(Entity *turret, float x, float y, Entity *target)
 {
 	auto &entity = manager->createEntity();
 	entity.addComponent(Components::ID::PositionComponent);

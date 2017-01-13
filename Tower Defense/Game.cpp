@@ -1,10 +1,12 @@
 #include "Game.hpp"
 #include "GameState.hpp"
 #include "MenuState.hpp"
+#include "PauseState.hpp"
+#include "GameOverState.hpp"
 
 Game::Game()
 	: window({ 800, 600 }, "TD", sf::Style::Titlebar | sf::Style::Close, sf::ContextSettings{0,0, 8, 1, 1, 0, false})
-	, context(window, font, textureManager, soundManager, cursor)
+	, context(window, font, textureManager, soundManager, cursor, score)
 	, manager(context)
 	, camera(context)
 {
@@ -15,6 +17,7 @@ Game::Game()
 	//window.setFramerateLimit(60);
 
 	font.loadFromFile("data/font.ttf");
+	score.setFont(font);
 
 	textureManager.loadFromFile("buttonGreen", "data/button_green.png");
 	textureManager.loadFromFile("buttonRed", "data/button_red.png");
@@ -22,6 +25,9 @@ Game::Game()
 	textureManager.loadFromFile("cursorNormal", "data/cursor/normal_cursor.png");
 	textureManager.loadFromFile("cursorUpgrade", "data/cursor/upgrade_cursor.png");
 	textureManager.loadFromFile("cursorSell", "data/cursor/sell_cursor.png");
+
+	soundManager.loadFromFile("mouseHover", "data/sfx/mouseover.ogg");
+	soundManager.loadFromFile("mouseClick", "data/sfx/click.ogg");
 
 	cursor.setTexture(textureManager.getTexture("cursorNormal"));
 
@@ -80,7 +86,7 @@ void Game::update(sf::Time frameTime)
 
 void Game::draw()
 {
-	window.clear();
+	window.clear(sf::Color(210, 210, 210));
 
 	manager.draw();
 	window.draw(cursor);
@@ -92,4 +98,6 @@ void Game::registerStates()
 {
 	manager.registerState<GameState>(States::ID::Game);
 	manager.registerState<MenuState>(States::ID::Menu);
+	manager.registerState<PauseState>(States::ID::Pause);
+	manager.registerState<GameOverState>(States::ID::GameOver);
 }

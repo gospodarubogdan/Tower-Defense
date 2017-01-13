@@ -30,13 +30,6 @@ private:
 	void readGameData();
 	void upgradeEntity(Entity *entity);
 
-	enum class Action
-	{
-		None,
-		Upgrade,
-		Sell
-	};
-	Action action;
 
 	std::vector<World::UpgradeData> upgrades;
 	World::GameData gameData;
@@ -60,5 +53,7 @@ private:
 	//MapLoader map;
 	sf::Texture texture;
 	TileMap map;
+
+	sf::Text countdown;
 };
 

@@ -5,6 +5,7 @@
 #include "Camera.hpp"
 #include "TextureManager.hpp"
 #include "SoundManager.hpp"
+#include "Score.hpp"
 
 class Game : sf::NonCopyable
 {
@@ -25,6 +26,7 @@ private:
 	SoundManager soundManager;
 
 	sf::Sprite cursor;
+	Score score;
 
 	sf::RenderWindow window;
 	States::Context  context;

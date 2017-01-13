@@ -3,6 +3,7 @@
 #include <functional>
 
 #include "Widget.hpp"
+#include "SoundManager.hpp"
 
 namespace gui
 {
@@ -18,7 +19,7 @@ namespace gui
 			Pressed
 		};
 
-		Button();
+		explicit Button(SoundManager &soundManager);
 
 		void setCallback(Callback callback);
 		void setTexture(const sf::Texture &texture);
@@ -37,6 +38,8 @@ namespace gui
 		virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 		void changeTexture(Type type);
 		void centerText();
+
+		SoundManager &soundManager;
 
 		Callback   callback;
 		sf::Sprite sprite;
