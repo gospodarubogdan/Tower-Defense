@@ -27,10 +27,10 @@ namespace gui
 		void update(sf::Time dt) override;
 
 		void resetTowerType();
-		Tower::Type getTowerType(const sf::Vector2i &mousePos);
+		Tower::Type getTowerType(const sf::Vector2i &mousePos) const;
 
 		void setAction(Action action);
-		const Action getAction() const;
+		Action getAction() const;
 	private:
 		virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 

@@ -2,8 +2,6 @@
 
 #include <memory>
 
-#include "ComponentsID.hpp"
-
 class Entity;
 
 class Component

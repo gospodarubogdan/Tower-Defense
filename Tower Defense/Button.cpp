@@ -5,8 +5,8 @@ using namespace gui;
 Button::Button(SoundManager &soundManager)
 	: soundManager(soundManager)
 	, callback()
-	, toggle(false)
 	, selected(false)
+	, toggle(false)
 {
 }
 
@@ -69,6 +69,8 @@ void Button::handleEvent(const sf::Event &event)
 			if (selected)
 				deselect();
 		}
+		break;
+	default: 
 		break;
 	}
 }

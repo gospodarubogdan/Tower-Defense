@@ -10,7 +10,7 @@ public:
 	void setFont(const sf::Font &font);
 
 	void computeScore(int gold, int lives, int level);
-	const int getScore() const;
+	int getScore() const;
 
 	sf::Vector2f getSize() const;
 private:

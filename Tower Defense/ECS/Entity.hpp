@@ -20,9 +20,9 @@ public:
 	Entity& operator=(const Entity&) = delete;
 	Entity& operator=(Entity&&) = default;
 
-	const unsigned int getID() const;
+	unsigned int getID() const;
 
-	bool hasComponent(Components::ID component);
+	bool hasComponent(Components::ID component) const;
 
 	void addComponent(Components::ID component);
 	void removeComponent(Components::ID component);

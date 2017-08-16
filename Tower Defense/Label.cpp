@@ -8,7 +8,7 @@ Label::Label()
 
 void Label::handleEvent(const sf::Event &event)
 {
-	sf::FloatRect rect = sprite.getGlobalBounds();
+	//auto rect = sprite.getGlobalBounds();
 	/*rect.left = getPosition().x;
 	rect.top = getPosition().y;
 	rect.width = sprite.getLocalBounds().width;
@@ -35,7 +35,7 @@ void Label::setFont(const sf::Font &font)
 	text.setFont(font);
 }
 
-const bool gui::Label::isMouseOver(const sf::Vector2i &mouse) const
+bool gui::Label::isMouseOver(const sf::Vector2i &mouse) const
 {
 	sf::FloatRect rect;
 	rect.left = getPosition().x;

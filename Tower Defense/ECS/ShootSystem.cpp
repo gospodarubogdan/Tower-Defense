@@ -40,9 +40,9 @@ void ShootSystem::update(sf::Time dt)
 	}
 }
 
-void ShootSystem::selectTarget(const sf::CircleShape &range, Entity *&target)
+void ShootSystem::selectTarget(const sf::CircleShape &range, Entity *&target) const
 {
-	auto &entities = manager->getEntities(Components::ID::HealthComponent);
+	auto &&entities = manager->getEntities(Components::ID::HealthComponent);
 
 	for (const auto &e : entities)
 	{
@@ -56,7 +56,7 @@ void ShootSystem::selectTarget(const sf::CircleShape &range, Entity *&target)
 	}
 }
 
-void ShootSystem::createProjectile(Entity *turret, float x, float y, Entity *target)
+void ShootSystem::createProjectile(Entity *turret, float x, float y, Entity *target) const
 {
 	auto &entity = manager->createEntity();
 	entity.addComponent(Components::ID::PositionComponent);

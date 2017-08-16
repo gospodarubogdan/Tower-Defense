@@ -1,7 +1,8 @@
 #include "Tile.hpp"
 
 Tile::Tile()
-	: state(Tile::Type::None)
+	: tileNumber(0)
+	, state(Tile::Type::None)
 {
 }
 
@@ -25,12 +26,12 @@ void Tile::setTileNumber(int number)
 	tileNumber = number;
 }
 
-const Tile::Type Tile::getState() const
+Tile::Type Tile::getState() const
 {
 	return state;
 }
 
-const int Tile::getTileNumber() const
+int Tile::getTileNumber() const
 {
 	return tileNumber;
 }

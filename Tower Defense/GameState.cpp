@@ -2,23 +2,23 @@
 #include "Constants.hpp"
 #include "SoundManager.hpp"
 
-#include "MoveSystem.hpp"
-#include "DrawSystem.hpp"
+#include "ECS/DrawSystem.hpp"
 
-#include "Button.hpp"
 #include "Score.hpp"
 
 #include <fstream>
+#include <iostream>
+#include "ECS/ComponentsData.hpp"
 
 GameState::GameState(StateManager &stack, States::Context context)
 	: State(stack, context)
-	, entityManager(context, gameData)
 	, gameData()
+	, selected(false)
 	, camera(context)
+	, entityManager(context, gameData)
+	, grid(*context.window)
 	, hud(context, gameData)
 	, map(TILE_SIZE, TILE_WORLD_SIZE)
-	, grid(*context.window)
-	, selected(false)
 {
 	context.textureManager->loadFromFile("mapSheet", "data/mapnospace.png");
 	context.textureManager->loadFromFile("mob", "data/animtest.png");
@@ -221,6 +221,8 @@ void GameState::placeTower(Tower::Type type)
 			return;
 		gameData.gold -= upgrades[1].cost[0];
 		break;
+	default: 
+		break;
 	}
 
 	int x = static_cast<int>(placement.getPosition().x / TILE_SIZE);
@@ -395,10 +397,8 @@ void GameState::readGameData()
 	}
 
 	fin.close();
-
 	fin.open("data/upgradedata.txt");
 
-	Tower::Type temp = Tower::Type::SingleTarget;
 	for (int i = 0; i < 3; i++)
 	{
 		World::UpgradeData tempData;
@@ -412,8 +412,6 @@ void GameState::readGameData()
 		}
 
 		upgrades.push_back(tempData);
-		temp = Tower::Type::Splash;
-		if (i == 2) temp = Tower::Type::Frost;
 	}
 
 	std::cout << upgrades[0].cost[2];

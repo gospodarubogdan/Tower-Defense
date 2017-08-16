@@ -14,13 +14,13 @@ public:
 	void resize(std::size_t size);
 	void clear();
 
-	const std::size_t getSize() const;
+	std::size_t getSize() const;
 
 private:
-	std::size_t size;
-	std::size_t nextID;
+	size_t size;
+	size_t nextID;
 
-	std::vector<std::size_t> freeEntities;
-	std::vector<std::size_t> entities;
+	std::vector<size_t> freeEntities;
+	std::vector<size_t> entities;
 };
 

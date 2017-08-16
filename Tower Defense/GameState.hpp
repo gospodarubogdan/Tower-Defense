@@ -6,7 +6,7 @@
 #include "TileMap.hpp"
 #include "HUD.hpp"
 #include "Grid.hpp"
-#include "EntityManager.hpp"
+#include "ECS/EntityManager.hpp"
 #include "Camera.hpp"
 #include "TowerTypes.hpp"
 #include "Gui.hpp"

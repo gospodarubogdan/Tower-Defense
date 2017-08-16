@@ -19,8 +19,8 @@ public:
 	void setTexture(const sf::Texture &texture, sf::IntRect rect);
 	void setTileNumber(int number);
 
-	const Type getState() const;
-	const int getTileNumber() const;
+	Type getState() const;
+	int getTileNumber() const;
 
 private:
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;

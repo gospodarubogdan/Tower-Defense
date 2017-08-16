@@ -4,19 +4,13 @@
 #include "Entity.hpp"
 #include "EntityPool.hpp"
 #include "System.hpp"
-#include "GameContext.hpp"
+#include "../GameContext.hpp"
 
-#include "ComponentsData.hpp"
+#include "../TextureManager.hpp"
 
-#include "TextureManager.hpp"
-#include "GameContext.hpp"
-
-#include <assert.h>
 #include <vector>
 #include <unordered_map>
 #include <map>
-#include <algorithm>
-#include <iostream>
 #include <functional>
 
 class DrawSystem;
@@ -32,7 +26,7 @@ public:
 	~EntityManager() = default;
 
 	void update(sf::Time dt);
-	void draw(sf::RenderWindow &window);
+	void draw(sf::RenderWindow &window) const;
 
 	template <typename T>
 	void registerComponent(Components::ID component);
@@ -41,8 +35,8 @@ public:
 	Entity *getSelectedEntity() const;
 
 	void setLevelData(World::LevelData &levelData);
-	World::LevelData &getLevelData();
-	World::GameData &getGameData();
+	World::LevelData &getLevelData() const;
+	World::GameData &getGameData() const;
 
 	Entity &createEntity();
 

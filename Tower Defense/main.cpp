@@ -1,5 +1,4 @@
 #include "Game.hpp"
-#include "MapLoader.hpp"
 
 //TODO
 // life = 30

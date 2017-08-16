@@ -6,32 +6,33 @@ using namespace gui;
 HUD::HUD(States::Context context, World::GameData &gameData)
 	: context(context)
 	, gameData(&gameData)
+	, turret()
 {
 	background.setFillColor(sf::Color(169, 169, 169));
 	background.setPosition(0.f, 480.f);
-	background.setSize({ 800, 120 });
+	background.setSize({800, 120});
 
 	auto upgrade = std::make_shared<gui::Button>(*context.soundManager);// (*getContext().soundPlayer);
 	upgrade->setTexture(context.textureManager->getTexture("buttonGreen"));
-	upgrade->setPosition({ 600.f, 485.f });
+	upgrade->setPosition({600.f, 485.f});
 	upgrade->setFont(*context.font);
 	upgrade->setText("Upgrade");
 	upgrade->setCallback([this]()
-	{
-		this->context.cursor->setTexture(this->context.textureManager->getTexture("cursorUpgrade"));
-		action = Action::Upgrade;
-	});
+		{
+			this->context.cursor->setTexture(this->context.textureManager->getTexture("cursorUpgrade"));
+			action = Action::Upgrade;
+		});
 
 	auto sell = std::make_shared<gui::Button>(*context.soundManager);// (*getContext().soundPlayer);
 	sell->setTexture(context.textureManager->getTexture("buttonGreen"));
-	sell->setPosition({ 600.f, 550.f });
+	sell->setPosition({600.f, 550.f});
 	sell->setFont(*context.font);
 	sell->setText("Sell");
 	sell->setCallback([this]()
-	{
-		this->context.cursor->setTexture(this->context.textureManager->getTexture("cursorSell"));
-		action = Action::Sell;
-	});
+		{
+			this->context.cursor->setTexture(this->context.textureManager->getTexture("cursorSell"));
+			action = Action::Sell;
+		});
 	container.addWidget(upgrade);
 	container.addWidget(sell);
 
@@ -98,7 +99,7 @@ void gui::HUD::resetTowerType()
 	turret = Tower::Type::None;
 }
 
-Tower::Type gui::HUD::getTowerType(const sf::Vector2i &mousePos)
+Tower::Type gui::HUD::getTowerType(const sf::Vector2i &mousePos) const
 {
 	return turret;
 }
@@ -108,14 +109,14 @@ void gui::HUD::setAction(Action action)
 	this->action = action;
 }
 
-const HUD::Action HUD::getAction() const
+HUD::Action HUD::getAction() const
 {
 	return action;
 }
 
 void HUD::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	states.transform *= getTransform();
+	//states.transform *= getTransform();
 
 	target.draw(background);
 	target.draw(singleTurret);

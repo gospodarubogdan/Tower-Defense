@@ -13,5 +13,5 @@ public:
 	void update(sf::Time dt) override;
 
 private:
-	void updateTexture(Direction direction, int &frame, sf::Sprite &sprite);
+	static void updateTexture(Direction direction, int &frame, sf::Sprite &sprite);
 };

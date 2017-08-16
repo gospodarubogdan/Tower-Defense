@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <string>
 
 class FPS
 {
@@ -9,11 +8,11 @@ public:
 	FPS();
 
 	void update(sf::Time dt);
-	void draw(sf::RenderWindow &window);
+	void draw(sf::RenderWindow &window) const;
 
 	void setFont(const sf::Font &font);
 
-	const unsigned int getFPS() const;
+	unsigned int getFPS() const;
 
 private:
 	unsigned int frames;

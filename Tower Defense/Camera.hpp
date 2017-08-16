@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 
 #include "GameContext.hpp"	
 
@@ -13,7 +14,7 @@ public:
 	void update(sf::Time dt);
 	void draw();
 
-	const sf::View &getView();
+	const sf::View &getView() const;
 private:
 
 	sf::View view;

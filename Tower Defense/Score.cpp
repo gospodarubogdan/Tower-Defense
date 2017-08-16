@@ -19,7 +19,7 @@ void Score::computeScore(int gold, int lives, int level)
 	scoreText.setString("Score: " + std::to_string(score));
 }
 
-const int Score::getScore() const
+int Score::getScore() const
 {
 	return score;
 }

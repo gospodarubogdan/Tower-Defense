@@ -13,9 +13,9 @@ public:
 	void update(sf::Time dt) override;
 
 private:
-	bool isCollision(Entity *projectile, Entity *target);
-	void dealDamage(sf::Time dt, Entity *projectile);
-	int getDistance(PositionComponent *posOne, PositionComponent *posTwo);
+	static bool isCollision(Entity *projectile, Entity *target);
+	void dealDamage(sf::Time dt, Entity *projectile) const;
+	int getDistance(PositionComponent *posOne, PositionComponent *posTwo) const;
 
 	std::vector<Entity*> enemies;
 };

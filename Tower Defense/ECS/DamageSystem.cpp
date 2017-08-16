@@ -3,8 +3,6 @@
 #include "ComponentsData.hpp"
 #include "EntityManager.hpp"	
 
-#include <math.h>
-
 DamageSystem::DamageSystem()
 {
 	bitset |= Components::ID::PositionComponent;
@@ -42,7 +40,7 @@ bool DamageSystem::isCollision(Entity *projectile, Entity *target)
 	return targetRender->sprite.getGlobalBounds().intersects(projRender->sprite.getGlobalBounds());
 }
 
-void DamageSystem::dealDamage(sf::Time dt, Entity *projectile)
+void DamageSystem::dealDamage(sf::Time dt, Entity *projectile) const
 {
 	auto dmg = static_cast<DamageComponent*>(projectile->getComponent(Components::ID::DamageComponent));
 	auto range = static_cast<SplashComponent*>(projectile->getComponent(Components::ID::SplashComponent));
@@ -126,7 +124,7 @@ void DamageSystem::dealDamage(sf::Time dt, Entity *projectile)
 
 }
 
-int DamageSystem::getDistance(PositionComponent *posOne, PositionComponent *posTwo)
+int DamageSystem::getDistance(PositionComponent *posOne, PositionComponent *posTwo) const
 {
 	float x = std::floor(posOne->x - posTwo->x);
 	float y = std::floor(posOne->y - posTwo->y);

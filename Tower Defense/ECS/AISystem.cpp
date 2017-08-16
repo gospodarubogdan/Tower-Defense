@@ -4,7 +4,6 @@
 #include "EntityManager.hpp"
 
 #include <fstream>
-#include <math.h>
 
 #define CHECKPOINTS 13
 
@@ -79,7 +78,7 @@ void AISystem::update(sf::Time dt)
 	}
 }
 
-void AISystem::updateDirection(DirectionComponent *direction, const sf::Vector2f &vector)
+void AISystem::updateDirection(DirectionComponent *direction, const sf::Vector2f &vector) const
 {
 	auto temp = direction->dir;
 	if (abs(vector.y) > abs(vector.x))

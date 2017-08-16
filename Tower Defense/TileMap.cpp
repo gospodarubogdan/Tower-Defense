@@ -16,7 +16,7 @@ TileMap::TileMap(float tileSize, float tileWorldSize)
 		for (int y = 0; y < MAP_HEIGHT; y++)
 		{
 			int tileNumber = mapValues[y * MAP_WIDTH + x];
-			addTileVertices(tileNumber % 19, tileNumber / 19, { (float)x, (float)y });
+			addTileVertices(tileNumber % 19, tileNumber / 19, { static_cast<float>(x), static_cast<float>(y) });
 		}
 	}
 }
@@ -28,9 +28,9 @@ void TileMap::loadFromCSV(const std::string &filename)
 	char comma;
 	int tileNumber;
 
-	for (int i = 0; i < MAP_WIDTH; i++)
+	for (auto i = 0; i < MAP_WIDTH; i++)
 	{
-		for (int j = 0; j < MAP_HEIGHT; j++)
+		for (auto j = 0; j < MAP_HEIGHT; j++)
 		{
 			fin >> tileNumber;
 			mapValues.push_back(tileNumber);

@@ -1,7 +1,7 @@
 #include "EntityPool.hpp"
 #include <assert.h>
 
-EntityPool::EntityPool(std::size_t size)
+EntityPool::EntityPool(size_t size)
 	: size(size)
 	, nextID(0)
 	, freeEntities()
@@ -15,7 +15,7 @@ EntityPool::~EntityPool()
 
 std::size_t EntityPool::createID()
 {
-	std::size_t id = 0;
+	std::size_t id;
 
 	if (!freeEntities.empty())
 	{
@@ -54,7 +54,7 @@ void EntityPool::clear()
 	entities.resize(size);
 }
 
-const std::size_t EntityPool::getSize() const
+std::size_t EntityPool::getSize() const
 {
 	return entities.size();
 }

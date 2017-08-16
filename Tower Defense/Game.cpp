@@ -7,8 +7,8 @@
 Game::Game()
 	: window({ 800, 600 }, "TD", sf::Style::Titlebar | sf::Style::Close, sf::ContextSettings{0,0, 8, 1, 1, 0, false})
 	, context(window, font, textureManager, soundManager, cursor, score)
-	, manager(context)
 	, camera(context)
+	, manager(context)
 {
 	//sf::Style::Titlebar | sf::Style::Close
 	//window.create({ 1440, 900 }, "TD", sf::Style::Titlebar | sf::Style::Close);

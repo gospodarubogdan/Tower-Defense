@@ -1,6 +1,8 @@
 #include "EntityManager.hpp"
 #include "Entity.hpp"
-#include "GameState.hpp"
+#include "../GameState.hpp"
+
+#include "ComponentsData.hpp"
 
 #include "DrawSystem.hpp"
 #include "ShootSystem.hpp"
@@ -8,10 +10,11 @@
 #include "AISystem.hpp"
 #include "DamageSystem.hpp"
 #include "AnimationSystem.hpp"
+#include <cassert>
 
 EntityManager::EntityManager(States::Context context, World::GameData &gameData)
-	: context(context)
-	, gameData(&gameData)
+	: gameData(&gameData)
+	, context(context)
 	, pool(300)
 	, entities()
 	, components()
@@ -31,7 +34,7 @@ void EntityManager::update(sf::Time dt)
 	applyChanges();
 }
 
-void EntityManager::draw(sf::RenderWindow &window)
+void EntityManager::draw(sf::RenderWindow &window) const
 {
 	renderer->draw(window);
 }
@@ -51,12 +54,12 @@ void EntityManager::setLevelData(World::LevelData &levelData)
 	this->levelData = &levelData;
 }
 
-World::LevelData &EntityManager::getLevelData()
+World::LevelData &EntityManager::getLevelData() const
 {
 	return *levelData;
 }
 
-World::GameData &EntityManager::getGameData()
+World::GameData &EntityManager::getGameData() const
 {
 	return *gameData;
 }

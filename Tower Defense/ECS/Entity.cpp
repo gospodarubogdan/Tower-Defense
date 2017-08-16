@@ -1,18 +1,20 @@
 #include "Entity.hpp"
 #include "EntityManager.hpp"
+#include <cassert>
 
 Entity::Entity(EntityManager &manager, unsigned int ID)
 	: manager(&manager)
 	, ID(ID)
+	, componentBits(0)
 {
 }
 
-const unsigned int Entity::getID() const
+unsigned int Entity::getID() const
 {
 	return ID;
 }
 
-bool Entity::hasComponent(Components::ID component)
+bool Entity::hasComponent(Components::ID component) const
 {
 	return (componentBits & static_cast<int>(component)) == static_cast<int>(component);
 }

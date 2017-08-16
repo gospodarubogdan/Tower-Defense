@@ -1,8 +1,6 @@
 #pragma once
 
 #include "State.hpp"
-//#include "Score.hpp"
-#include <iostream>
 #include <SFML/Audio.hpp>
 
 class GameOverState final : public State

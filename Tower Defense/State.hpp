@@ -22,9 +22,9 @@ public:
 	virtual void draw() = 0;
 
 protected:
-	void pushState(States::ID state);
-	void popState();
-	void clearStates();
+	void pushState(States::ID state) const;
+	void popState() const;
+	void clearStates() const;
 
 	States::Context getContext() const;
 

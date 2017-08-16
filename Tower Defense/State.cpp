@@ -7,17 +7,17 @@ State::State(StateManager &stack, States::Context context)
 {
 }
 
-void State::pushState(States::ID state)
+void State::pushState(States::ID state) const
 {
 	stack.pushState(state);
 }
 
-void State::popState()
+void State::popState() const
 {
 	stack.popState();
 }
 
-void State::clearStates()
+void State::clearStates() const
 {
 	stack.clearStates();
 }

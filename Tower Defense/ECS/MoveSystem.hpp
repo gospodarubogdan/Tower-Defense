@@ -9,7 +9,5 @@ public:
 	~MoveSystem() = default;
 
 	void update(sf::Time dt) override;
-
-private:
 };
 

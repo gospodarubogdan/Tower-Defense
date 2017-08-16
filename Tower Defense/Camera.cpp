@@ -51,11 +51,11 @@ void Camera::update(sf::Time dt)
 {
 	if (dragging)
 	{
-		sf::Vector2i mousePos = sf::Mouse::getPosition(*context.window);
-		sf::Vector2f worldPos = context.window->mapPixelToCoords(mousePos, view);
+		auto mousePos = sf::Mouse::getPosition(*context.window);
+		//auto worldPos = context.window->mapPixelToCoords(mousePos, view);
 		//std::cout << worldPos.x << ' ' << worldPos.y << std::endl;
 
-		int temp = initialMousePos.x - mousePos.x;
+		//auto temp = initialMousePos.x - mousePos.x;
 
 		view.move(static_cast<float>(initialMousePos.x - mousePos.x), 
 			static_cast<float>(initialMousePos.y - mousePos.y));
@@ -115,7 +115,7 @@ void Camera::draw()
 	view.setCenter(x, y);
 }
 
-const sf::View &Camera::getView()
+const sf::View &Camera::getView() const
 {
 	return view;
 }

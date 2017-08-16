@@ -1,6 +1,7 @@
 #pragma once
 
 #include "System.hpp"
+#include <SFML/System.hpp>
 
 class DrawSystem : public System
 {

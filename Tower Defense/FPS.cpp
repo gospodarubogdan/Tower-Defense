@@ -27,7 +27,7 @@ void FPS::update(sf::Time dt)
 	}
 }
 
-void FPS::draw(sf::RenderWindow &window)
+void FPS::draw(sf::RenderWindow &window) const
 {
 	window.draw(fpsText);
 }
@@ -37,7 +37,7 @@ void FPS::setFont(const sf::Font &font)
 	fpsText.setFont(font);
 }
 
-const unsigned int FPS::getFPS() const
+unsigned int FPS::getFPS() const
 {
 	return fps;
 }

@@ -16,7 +16,7 @@ namespace gui
 		void setText(const std::string &text);
 		void setFont(const sf::Font &font);
 
-		const bool isMouseOver(const sf::Vector2i &mouse) const;
+		bool isMouseOver(const sf::Vector2i &mouse) const;
 	private:
 		virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 		void centerText();
